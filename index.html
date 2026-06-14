@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>City Metro Bus — Get Moving</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="logo.png" alt="City Metro" onerror="this.style.display='none'">
+      <span class="nav-wordmark">City Metro <strong>Bus</strong></span>
+    </a>
+    <button class="nav-burger" id="navBurger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="pages/arrivals.html">Live Arrivals</a></li>
+      <li><a href="pages/trip-planner.html">Trip Planner</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Republic States Transit Authority</div>
+    <h1 class="hero-h1">LC County<br>Bus Network</h1>
+    <p class="hero-sub">Real-time tracking · Citywide coverage · Connects to rail</p>
+    <div class="hero-actions">
+      <a href="pages/trip-planner.html" class="btn-primary">Plan a Trip</a>
+      <a href="pages/arrivals.html" class="btn-outline">Live Arrivals</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><span id="statRoutes">—</span><label>Routes</label></div>
+    <div class="stat"><span id="statStops">—</span><label>Stops</label></div>
+    <div class="stat"><span id="statBuses">—</span><label>Buses Active</label></div>
+  </div>
+</section>
+
+<!-- ── Live Map ── -->
+<section class="section map-section">
+  <div class="section-header">
+    <h2>Live Bus Map</h2>
+    <div class="live-dot"><span></span>Live</div>
+  </div>
+  <div class="map-embed-wrap">
+    <canvas id="liveMap"></canvas>
+    <div class="map-overlay-msg" id="mapMsg">Loading...</div>
+  </div>
+  <div class="route-legend" id="routeLegend"></div>
+</section>
+
+<!-- ── Features ── -->
+<section class="section features-section">
+  <div class="features-grid">
+    <div class="feature">
+      <div class="feature-icon">🚌</div>
+      <h3>Real-Time Tracking</h3>
+      <p>See every bus on the network updated live. Know exactly when your ride arrives.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🚇</div>
+      <h3>Rail Connections</h3>
+      <p>Seamless transfers to the A, B, D, E, F, and K Metro rail lines at key stops.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🗺</div>
+      <h3>Trip Planner</h3>
+      <p>Enter where you're going and we'll find the fastest route with live ETAs.</p>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">📡</div>
+      <h3>Service Alerts</h3>
+      <p>Get real-time updates on delays, detours, and scheduled maintenance.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── Alerts ── -->
+<section class="section alerts-section" id="alertsSection" style="display:none">
+  <div class="section-header"><h2>Service Alerts</h2></div>
+  <div id="alertsList"></div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="logo.png" alt="City Metro" onerror="this.style.display='none'">
+      <span>City Metro Bus</span>
+    </div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="pages/arrivals.html">Arrivals</a>
+      <a href="pages/trip-planner.html">Trip Planner</a>
+      <a href="admin.html">Admin</a>
+    </div>
+    <p class="footer-copy">© 2025 Republic States Transit Authority. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+const API = 'https://YOUR_WORKER.workers.dev'; // ← update
+
+// ── Nav burger ──
+document.getElementById('navBurger').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+  document.getElementById('navBurger').classList.toggle('open');
+});
+
+// ── Stats ──
+async function loadStats() {
+  try {
+    const res = await fetch(API + '/api/stats');
+    const data = await res.json();
+    document.getElementById('statRoutes').textContent = data.active_routes || 0;
+    document.getElementById('statStops').textContent = data.active_stops || 0;
+    document.getElementById('statBuses').textContent = data.buses_in_service || 0;
+  } catch {}
+}
+
+// ── Alerts ──
+async function loadAlerts() {
+  try {
+    const res = await fetch(API + '/api/alerts');
+    const alerts = await res.json();
+    if (!alerts.length) return;
+    document.getElementById('alertsSection').style.display = 'block';
+    const colors = { info: '#0057A8', warning: '#F5A623', critical: '#e53e3e' };
+    document.getElementById('alertsList').innerHTML = alerts.map(a => `
+      <div class="alert-item" style="border-left:4px solid ${colors[a.severity]||'#888'}">
+        <div class="alert-title">${a.title}</div>
+        <div class="alert-body">${a.body}</div>
+      </div>
+    `).join('');
+  } catch {}
+}
+
+// ── Live mini map ──
+const canvas = document.getElementById('liveMap');
+const ctx = canvas.getContext('2d');
+let mapRoutes = [], mapStops = [], mapBuses = [];
+
+function resizeMap() {
+  canvas.width = canvas.parentElement.clientWidth;
+  canvas.height = Math.min(420, window.innerHeight * 0.45);
+  renderMap();
+}
+
+async function loadMapData() {
+  try {
+    const [r, s, b] = await Promise.all([
+      fetch(API + '/api/routes').then(x => x.json()),
+      fetch(API + '/api/stops').then(x => x.json()),
+      fetch(API + '/api/buses').then(x => x.json()),
+    ]);
+    mapRoutes = r || [];
+    mapStops = s || [];
+    mapBuses = b || [];
+    document.getElementById('mapMsg').style.display = 'none';
+    buildLegend();
+    renderMap();
+  } catch {
+    document.getElementById('mapMsg').textContent = 'Map unavailable';
+  }
+}
+
+function buildLegend() {
+  document.getElementById('routeLegend').innerHTML = mapRoutes.map(r => `
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${r.color}"></div>
+      <span>${r.short_name} – ${r.name}</span>
+    </div>
+  `).join('');
+}
+
+function renderMap() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const W = canvas.width, H = canvas.height;
+
+  // Light grid
+  ctx.strokeStyle = '#e0e0e0';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+  // Routes
+  mapRoutes.forEach(route => {
+    const pts = JSON.parse(route.path_data || '[]');
+    if (pts.length < 2) return;
+    ctx.strokeStyle = route.color || '#FFD600';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    pts.forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.stroke();
+  });
+
+  // Stops
+  mapStops.forEach(stop => {
+    ctx.fillStyle = '#fff';
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(stop.x, stop.y, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+  });
+
+  // Buses — animated pulse
+  const t = Date.now() / 600;
+  mapBuses.forEach(bus => {
+    if (bus.status !== 'in_service') return;
+    const x = bus.current_x, y = bus.current_y;
+    const color = bus.color || '#FFD600';
+    const pulse = 0.4 + 0.3 * Math.abs(Math.sin(t));
+
+    // Pulse ring
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.globalAlpha = pulse;
+    ctx.beginPath();
+    ctx.arc(x, y, 14 + 4 * Math.abs(Math.sin(t)), 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    // Bus body
+    ctx.fillStyle = color;
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(x, y, 9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Route label
+    ctx.fillStyle = '#000';
+    ctx.font = 'bold 7px Helvetica';
+    ctx.textAlign = 'center';
+    ctx.fillText(bus.short_name || bus.bus_number || '', x, y + 2.5);
+    ctx.textAlign = 'left';
+  });
+}
+
+window.addEventListener('resize', resizeMap);
+resizeMap();
+loadStats();
+loadAlerts();
+loadMapData();
+
+// Refresh buses every 15s
+setInterval(async () => {
+  try {
+    const res = await fetch(API + '/api/buses');
+    mapBuses = await res.json();
+  } catch {}
+}, 15000);
+
+// Animate map
+(function loop() {
+  renderMap();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
