@@ -3,59 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trip Planner — City Metro Bus</title>
+<title>Trip Planner — City Metro Transit Bus</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <nav id="nav">
   <div class="nav-inner">
-    <a href="../index.html" class="nav-logo">
-      <img src="logo.png" alt="City Metro" onerror="this.style.display='none'">
-      <span class="nav-wordmark">City Metro <strong>Bus</strong></span>
+    <a href="index.html" class="nav-logo">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="4" fill="#111"/>
+        <rect x="5" y="10" width="22" height="14" rx="2" fill="#FFD600"/>
+        <rect x="7" y="12" width="7" height="5" rx="1" fill="#111"/>
+        <rect x="18" y="12" width="7" height="5" rx="1" fill="#111"/>
+        <circle cx="10" cy="25" r="2.5" fill="#111" stroke="#FFD600" stroke-width="1.5"/>
+        <circle cx="22" cy="25" r="2.5" fill="#111" stroke="#FFD600" stroke-width="1.5"/>
+      </svg>
+      <span class="nav-wordmark">City Metro Transit <span>Bus</span></span>
     </a>
     <button class="nav-burger" id="navBurger"><span></span><span></span><span></span></button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html">Home</a></li>
       <li><a href="arrivals.html">Live Arrivals</a></li>
       <li><a href="trip-planner.html" class="active">Trip Planner</a></li>
     </ul>
   </div>
 </nav>
 
-<div class="page-header">
-  <div class="page-header-inner">
+<div class="page-hd">
+  <div class="page-hd-inner">
     <div class="page-eyebrow">Republic States Transit Authority</div>
     <h1>Trip Planner</h1>
     <p>Find the best bus route between any two stops in LC County</p>
   </div>
 </div>
 
-<div class="trip-section">
+<div class="page-content">
 
   <div class="trip-form">
-    <div class="trip-form-row">
+    <div class="trip-row">
       <div>
         <label>🟢 From Stop</label>
-        <select id="fromStop">
-          <option value="">Select origin stop…</option>
-        </select>
+        <select id="fromStop"><option value="">Select origin…</option></select>
       </div>
       <div>
         <label>🔴 To Stop</label>
-        <select id="toStop">
-          <option value="">Select destination stop…</option>
-        </select>
+        <select id="toStop"><option value="">Select destination…</option></select>
       </div>
     </div>
-    <button class="btn-primary" onclick="planTrip()" style="min-width:160px">Find Routes →</button>
+    <button class="btn-primary" onclick="planTrip()">Find Routes →</button>
   </div>
 
   <div id="tripResults"></div>
 
-  <!-- Rail connection note -->
-  <div style="margin-top:32px;padding:16px;background:#f0f7ff;border-left:4px solid #0057A8;border-radius:2px;font-size:13px;color:#333">
-    <strong>🚇 Rail connections:</strong> Stops marked with a rail badge connect to City Metro rail lines. Check the Live Arrivals page for rail-to-bus transfer times.
+  <div style="margin-top:28px;padding:14px 16px;background:#f0f7ff;border-left:3px solid #0057A8;border-radius:3px;font-size:13px;color:#333">
+    <strong>🚇 Rail connections</strong> — Stops marked with 🚇 connect to City Metro rail lines. Check Live Arrivals for transfer times.
   </div>
 
 </div>
@@ -63,23 +65,28 @@
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
-      <img src="../logo.png" alt="City Metro" onerror="this.style.display='none'">
-      <span>City Metro Bus</span>
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="4" fill="#333"/>
+        <rect x="5" y="10" width="22" height="14" rx="2" fill="#FFD600"/>
+        <rect x="7" y="12" width="7" height="5" rx="1" fill="#333"/>
+        <rect x="18" y="12" width="7" height="5" rx="1" fill="#333"/>
+        <circle cx="10" cy="25" r="2.5" fill="#333" stroke="#FFD600" stroke-width="1.5"/>
+        <circle cx="22" cy="25" r="2.5" fill="#333" stroke="#FFD600" stroke-width="1.5"/>
+      </svg>
+      <span>City Metro Transit Bus</span>
     </div>
     <div class="footer-links">
-      <a href="../index.html">Home</a>
-      <a href="arrivals.html">Arrivals</a>
+      <a href="index.html">Home</a>
+      <a href="arrivals.html">Live Arrivals</a>
       <a href="trip-planner.html">Trip Planner</a>
     </div>
-    <p class="footer-copy">© 2026 City Metro Transit</p>
+    <p class="footer-copy">© 2026 Republic States Transit Authority — City Metro Transit. All rights reserved.</p>
   </div>
 </footer>
 
 <script>
-const API = 'https://city-metro-bus-api.felixfeger46.workers.dev/'; // ← update
-
-let stops = [];
-let routes = [];
+const API = 'https://city-metro-bus-api.felixfeger46.workers.dev';
+let stops = [], routes = [];
 
 document.getElementById('navBurger').addEventListener('click', () => {
   document.getElementById('navLinks').classList.toggle('open');
@@ -90,19 +97,16 @@ async function init() {
     fetch(API + '/api/stops').then(x => x.json()).catch(() => []),
     fetch(API + '/api/routes').then(x => x.json()).catch(() => []),
   ]);
-  stops = s || [];
-  routes = r || [];
-
+  stops = Array.isArray(s) ? s : [];
+  routes = Array.isArray(r) ? r : [];
   const fromSel = document.getElementById('fromStop');
   const toSel = document.getElementById('toStop');
-
   stops.forEach(stop => {
-    const railConns = JSON.parse(stop.rail_connections || '[]');
-    const label = stop.name + (railConns.length ? ' 🚇' : '');
+    const rail = (() => { try { return JSON.parse(stop.rail_connections || '[]'); } catch { return []; } })();
+    const label = stop.name + (rail.length ? ' 🚇' : '');
     [fromSel, toSel].forEach(sel => {
       const o = document.createElement('option');
-      o.value = stop.id;
-      o.textContent = label;
+      o.value = stop.id; o.textContent = label;
       sel.appendChild(o);
     });
   });
@@ -111,84 +115,37 @@ async function init() {
 async function planTrip() {
   const fromId = document.getElementById('fromStop').value;
   const toId = document.getElementById('toStop').value;
-  const resultsEl = document.getElementById('tripResults');
-
-  if (!fromId || !toId) {
-    resultsEl.innerHTML = '<div class="empty-state">Please select both a from and to stop.</div>';
-    return;
-  }
-  if (fromId === toId) {
-    resultsEl.innerHTML = '<div class="empty-state">From and to stops must be different.</div>';
-    return;
-  }
-
-  resultsEl.innerHTML = '<div class="empty-state">Planning your trip…</div>';
-
+  const el = document.getElementById('tripResults');
+  if (!fromId || !toId) { el.innerHTML = '<div class="empty">Please select both a from and to stop.</div>'; return; }
+  if (fromId === toId) { el.innerHTML = '<div class="empty">From and to stops must be different.</div>'; return; }
+  el.innerHTML = '<div class="empty">Planning your trip…</div>';
   try {
-    const res = await fetch(`${API}/api/trip?from=${fromId}&to=${toId}`);
-    const data = await res.json();
-
-    if (data.error) {
-      resultsEl.innerHTML = `<div class="empty-state">${data.error}</div>`;
+    const data = await fetch(`${API}/api/trip?from=${fromId}&to=${toId}`).then(r => r.json());
+    if (data.error) { el.innerHTML = `<div class="empty">${data.error}</div>`; return; }
+    if (!data.options?.length) {
+      el.innerHTML = `<div class="empty"><strong>No direct routes found</strong><br>No direct service between ${data.from?.name} and ${data.to?.name}. You may need to transfer — check Live Arrivals for nearby stops.</div>`;
       return;
     }
-
-    if (!data.options || !data.options.length) {
-      resultsEl.innerHTML = `
-        <div class="empty-state">
-          <strong>No direct routes found</strong><br>
-          There are no direct bus routes between ${data.from.name} and ${data.to.name}.<br>
-          You may need to transfer — check the Live Arrivals page for nearby stops.
-        </div>`;
-      return;
-    }
-
-    let html = `<div style="font-size:13px;color:#666;margin-bottom:16px">
-      ${data.options.length} option${data.options.length > 1 ? 's' : ''} found from <strong>${data.from.name}</strong> to <strong>${data.to.name}</strong>
-    </div>`;
-
-    data.options.forEach((opt, i) => {
-      const route = opt.route;
-      const waitStr = opt.next_bus_eta !== null ? `${opt.next_bus_eta} min wait` : 'No bus currently tracked';
-      const rideStr = opt.ride_time_minutes !== null ? `~${opt.ride_time_minutes} min ride` : '';
-      const totalStr = opt.total_time_minutes ? `~${opt.total_time_minutes} min total` : '';
-
-      html += `
-        <div class="trip-option">
-          <div class="trip-option-header">
-            <span class="route-badge" style="background:${route.color}">${route.short_name}</span>
-            <span class="label">${route.name}</span>
-            ${totalStr ? `<span class="total-time">${totalStr}</span>` : ''}
+    el.innerHTML = `<p style="font-size:13px;color:#666;margin-bottom:16px">${data.options.length} option${data.options.length > 1 ? 's' : ''} from <strong>${data.from.name}</strong> to <strong>${data.to.name}</strong></p>` +
+      data.options.map(opt => {
+        const wait = opt.next_bus_eta !== null ? `${opt.next_bus_eta} min wait` : 'No bus currently tracked';
+        const ride = opt.ride_time_minutes ? `~${opt.ride_time_minutes} min ride` : '';
+        const total = opt.total_time_minutes ? `~${opt.total_time_minutes} min total` : '';
+        return `<div class="trip-option">
+          <div class="trip-opt-hd">
+            <span class="trip-badge" style="background:${opt.route.color}">${opt.route.short_name}</span>
+            <span class="lbl">${opt.route.name}</span>
+            ${total ? `<span class="total">${total}</span>` : ''}
           </div>
           <div class="trip-steps">
-            <div class="trip-step">
-              <div class="trip-step-icon">🟢</div>
-              <div class="trip-step-text">
-                <strong>Board at ${opt.board_at}</strong>
-                <span>${waitStr}</span>
-              </div>
-            </div>
-            <div class="trip-step">
-              <div class="trip-step-icon">🚌</div>
-              <div class="trip-step-text">
-                <strong>Ride ${route.short_name} – ${route.name}</strong>
-                <span>${rideStr || 'Distance calculated from stop positions'}</span>
-              </div>
-            </div>
-            <div class="trip-step">
-              <div class="trip-step-icon">🔴</div>
-              <div class="trip-step-text">
-                <strong>Alight at ${opt.alight_at}</strong>
-                <span>Your destination</span>
-              </div>
-            </div>
+            <div class="trip-step"><div class="step-icon">🟢</div><div class="step-txt"><strong>Board at ${opt.board_at}</strong><span>${wait}</span></div></div>
+            <div class="trip-step"><div class="step-icon">🚌</div><div class="step-txt"><strong>${opt.route.short_name} – ${opt.route.name}</strong><span>${ride}</span></div></div>
+            <div class="trip-step"><div class="step-icon">🔴</div><div class="step-txt"><strong>Alight at ${opt.alight_at}</strong><span>Your destination</span></div></div>
           </div>
         </div>`;
-    });
-
-    resultsEl.innerHTML = html;
-  } catch (e) {
-    resultsEl.innerHTML = '<div class="empty-state">Could not plan trip. Please check your connection and try again.</div>';
+      }).join('');
+  } catch {
+    el.innerHTML = '<div class="empty">Could not plan trip. Check your connection and try again.</div>';
   }
 }
 
