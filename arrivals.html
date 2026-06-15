@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Arrivals — City Metro Bus</title>
+<title>Live Arrivals — City Metro Transit Bus</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,8 +11,15 @@
 <nav id="nav">
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">
-      <img src="logo.png" alt="City Metro" onerror="this.style.display='none'">
-      <span class="nav-wordmark">City Metro <strong>Bus</strong></span>
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="4" fill="#111"/>
+        <rect x="5" y="10" width="22" height="14" rx="2" fill="#FFD600"/>
+        <rect x="7" y="12" width="7" height="5" rx="1" fill="#111"/>
+        <rect x="18" y="12" width="7" height="5" rx="1" fill="#111"/>
+        <circle cx="10" cy="25" r="2.5" fill="#111" stroke="#FFD600" stroke-width="1.5"/>
+        <circle cx="22" cy="25" r="2.5" fill="#111" stroke="#FFD600" stroke-width="1.5"/>
+      </svg>
+      <span class="nav-wordmark">City Metro Transit <span>Bus</span></span>
     </a>
     <button class="nav-burger" id="navBurger"><span></span><span></span><span></span></button>
     <ul class="nav-links" id="navLinks">
@@ -23,35 +30,30 @@
   </div>
 </nav>
 
-<div class="page-header">
-  <div class="page-header-inner">
-    <div class="page-eyebrow">City Metro Bus</div>
+<div class="page-hd">
+  <div class="page-hd-inner">
+    <div class="page-eyebrow">Republic States Transit Authority</div>
     <h1>Live Arrivals</h1>
     <p>Select a stop to see real-time bus arrivals</p>
   </div>
 </div>
 
-<div class="arrivals-section">
+<div class="page-content">
 
-  <!-- Stop search -->
-  <div class="stop-search-bar">
+  <div class="search-bar">
     <input type="text" id="stopSearch" placeholder="Search stops…" oninput="filterStops()">
     <select id="routeFilter" onchange="filterStops()">
       <option value="">All routes</option>
     </select>
-    <button onclick="refreshArrivals()">↻ Refresh</button>
+    <button onclick="if(selectedStopId) loadArrivals(selectedStopId)">↻ Refresh</button>
   </div>
 
-  <!-- Auto-refresh indicator -->
-  <div style="font-size:12px;color:#888;margin-bottom:20px;display:flex;align-items:center;gap:8px">
-    <span id="refreshDot" style="width:8px;height:8px;background:#00a651;border-radius:50%;display:inline-block;animation:pulse 1.4s ease-in-out infinite"></span>
-    Auto-refreshing every 30 seconds · Last updated: <span id="lastUpdated">—</span>
+  <div class="refresh-row">
+    <span style="width:7px;height:7px;background:#22aa55;border-radius:50%;display:inline-block;animation:blink 1.4s ease-in-out infinite"></span>
+    Auto-refreshes every 30 seconds · Last updated: <span id="lastUpdated">—</span>
   </div>
 
-  <!-- Stop grid -->
-  <div class="stop-list-grid" id="stopGrid"></div>
-
-  <!-- Arrivals board -->
+  <div class="stop-grid" id="stopGrid"><div class="empty">Loading stops…</div></div>
   <div id="arrivalsBoard"></div>
 
 </div>
@@ -59,27 +61,29 @@
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
-      <img src="../logo.png" alt="City Metro" onerror="this.style.display='none'">
-      <span>City Metro Bus</span>
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="4" fill="#333"/>
+        <rect x="5" y="10" width="22" height="14" rx="2" fill="#FFD600"/>
+        <rect x="7" y="12" width="7" height="5" rx="1" fill="#333"/>
+        <rect x="18" y="12" width="7" height="5" rx="1" fill="#333"/>
+        <circle cx="10" cy="25" r="2.5" fill="#333" stroke="#FFD600" stroke-width="1.5"/>
+        <circle cx="22" cy="25" r="2.5" fill="#333" stroke="#FFD600" stroke-width="1.5"/>
+      </svg>
+      <span>City Metro Transit Bus</span>
     </div>
     <div class="footer-links">
-      <a href="../index.html">Home</a>
-      <a href="arrivals.html">Arrivals</a>
+      <a href="index.html">Home</a>
+      <a href="arrivals.html">Live Arrivals</a>
       <a href="trip-planner.html">Trip Planner</a>
     </div>
-    <p class="footer-copy">© 2025 Republic States Transit Authority</p>
+    <p class="footer-copy">© 2026 Republic States Transit Authority — City Metro Transit. All rights reserved.</p>
   </div>
 </footer>
 
 <script>
-const API = 'https://city-metro-bus-api.felixfeger46.workers.dev/'; // ← update
+const API = 'https://city-metro-bus-api.felixfeger46.workers.dev';
+let allStops = [], allRoutes = [], selectedStopId = null, refreshTimer = null;
 
-let allStops = [];
-let allRoutes = [];
-let selectedStopId = null;
-let refreshTimer = null;
-
-// Nav burger
 document.getElementById('navBurger').addEventListener('click', () => {
   document.getElementById('navLinks').classList.toggle('open');
 });
@@ -89,121 +93,95 @@ async function init() {
     fetch(API + '/api/stops').then(r => r.json()).catch(() => []),
     fetch(API + '/api/routes').then(r => r.json()).catch(() => []),
   ]);
-  allStops = stops || [];
-  allRoutes = routes || [];
+  allStops = Array.isArray(stops) ? stops : [];
+  allRoutes = Array.isArray(routes) ? routes : [];
 
-  // Build route filter
   const sel = document.getElementById('routeFilter');
   allRoutes.forEach(r => {
     const o = document.createElement('option');
-    o.value = r.id;
-    o.textContent = `${r.short_name} – ${r.name}`;
+    o.value = r.id; o.textContent = `${r.short_name} – ${r.name}`;
     sel.appendChild(o);
   });
 
-  renderStopGrid(allStops);
-
-  // Auto-select first stop if available
+  renderStops(allStops);
   if (allStops.length) selectStop(allStops[0].id);
 }
 
 function filterStops() {
-  const query = document.getElementById('stopSearch').value.toLowerCase();
-  const routeId = document.getElementById('routeFilter').value;
-  const filtered = allStops.filter(s => {
-    const matchName = s.name.toLowerCase().includes(query);
-    const matchRoute = !routeId || JSON.parse(s.routes || '[]').includes(routeId);
-    return matchName && matchRoute;
-  });
-  renderStopGrid(filtered);
+  const q = document.getElementById('stopSearch').value.toLowerCase();
+  const rid = document.getElementById('routeFilter').value;
+  renderStops(allStops.filter(s => {
+    const routes = (() => { try { return JSON.parse(s.routes || '[]'); } catch { return []; } })();
+    return s.name.toLowerCase().includes(q) && (!rid || routes.includes(rid));
+  }));
 }
 
-function renderStopGrid(stops) {
-  const grid = document.getElementById('stopGrid');
+function renderStops(stops) {
   if (!stops.length) {
-    grid.innerHTML = '<div class="empty-state">No stops match your search.</div>';
+    document.getElementById('stopGrid').innerHTML = '<div class="empty">No stops found.</div>';
     return;
   }
-  grid.innerHTML = stops.map(s => {
-    const railConns = JSON.parse(s.rail_connections || '[]');
-    const stopRoutes = JSON.parse(s.routes || '[]');
-    const routeLabels = stopRoutes.map(rid => {
+  document.getElementById('stopGrid').innerHTML = stops.map(s => {
+    const routes = (() => { try { return JSON.parse(s.routes || '[]'); } catch { return []; } })();
+    const rail = (() => { try { return JSON.parse(s.rail_connections || '[]'); } catch { return []; } })();
+    const pills = routes.map(rid => {
       const r = allRoutes.find(x => x.id === rid);
-      return r ? `<span style="display:inline-block;background:${r.color};color:#000;font-size:10px;font-weight:800;padding:1px 5px;border-radius:2px;margin-right:2px">${r.short_name}</span>` : '';
+      return r ? `<span class="route-pill" style="background:${r.color}">${r.short_name}</span>` : '';
     }).join('');
-
     return `<div class="stop-card ${selectedStopId === s.id ? 'selected' : ''}" onclick="selectStop('${s.id}')">
       <h4>${s.name}</h4>
-      <p style="margin-bottom:6px">${routeLabels || 'No routes'}</p>
-      ${railConns.length ? `<p style="color:#0057A8;font-size:11px;font-weight:700">🚇 Rail connection</p>` : ''}
+      <p style="margin-bottom:5px">${pills || '<span style="color:#aaa">No routes</span>'}</p>
+      ${rail.length ? '<p>🚇 Rail connection</p>' : ''}
     </div>`;
   }).join('');
 }
 
-async function selectStop(stopId) {
-  selectedStopId = stopId;
-  // Re-render grid to show selected
+function selectStop(id) {
+  selectedStopId = id;
   filterStops();
-  await loadArrivals(stopId);
+  loadArrivals(id);
   clearTimeout(refreshTimer);
-  refreshTimer = setTimeout(() => loadArrivals(stopId), 30000);
+  refreshTimer = setTimeout(() => loadArrivals(id), 30000);
 }
 
 async function loadArrivals(stopId) {
   const board = document.getElementById('arrivalsBoard');
-  board.innerHTML = '<div class="empty-state">Loading arrivals…</div>';
-
+  board.innerHTML = '<div class="empty">Loading arrivals…</div>';
   try {
-    const res = await fetch(`${API}/api/stops/${stopId}`);
-    const stop = await res.json();
-    const railConns = JSON.parse(stop.rail_connections || '[]');
+    const stop = await fetch(`${API}/api/stops/${stopId}`).then(r => r.json());
+    const rail = (() => { try { return JSON.parse(stop.rail_connections || '[]'); } catch { return []; } })();
+    const railColors = { A:'#0057A8', B:'#CC0000', D:'#7B2D8B', E:'#F5A623', F:'#FF6B00', K:'#E91E8C' };
+    const railHtml = rail.map(rc =>
+      `<span class="rail-chip" style="background:${railColors[rc.line]||'#555'}">🚇 ${rc.line} – ${rc.station_name}</span>`
+    ).join('');
 
-    const railChipsHtml = railConns.map(rc => {
-      const colors = { A:'#0057A8', B:'#CC0000', D:'#7B2D8B', E:'#F5A623', F:'#FF6B00', K:'#E91E8C' };
-      return `<span class="rail-chip" style="background:${colors[rc.line]||'#888'}">
-        <span>🚇</span> ${rc.line} – ${rc.station_name}
-      </span>`;
-    }).join('');
-
-    let arrivalsHtml = '';
-    if (!stop.arrivals || !stop.arrivals.length) {
-      arrivalsHtml = '<div class="empty-state">No buses currently tracked on this stop\'s routes.</div>';
-    } else {
-      arrivalsHtml = stop.arrivals.map(a => {
-        const etaClass = a.status === 'arriving' ? 'eta-arriving' : a.status === 'approaching' ? 'eta-approaching' : '';
-        const etaText = a.eta_minutes === null ? '—' : a.eta_minutes <= 1 ? 'Now' : a.eta_minutes;
-        const etaUnit = (a.eta_minutes === null || a.eta_minutes <= 1) ? '' : 'min';
-        return `<div class="arrival-row">
-          <div class="arrival-badge" style="background:${a.color}">${a.short_name}</div>
-          <div class="arrival-info">
-            <div class="route-name">${a.route_name}</div>
-            <div class="bus-num">Bus ${a.bus_number}</div>
-          </div>
-          <div class="arrival-eta">
-            <div class="eta-time ${etaClass}">${etaText}</div>
-            <div class="eta-unit">${etaUnit}</div>
-          </div>
-        </div>`;
-      }).join('');
-    }
-
-    board.innerHTML = `
-      <div class="arrivals-board">
-        <div class="arrivals-board-header">
-          <h3>${stop.name}</h3>
-          ${railChipsHtml ? `<div class="rail-chips">${railChipsHtml}</div>` : ''}
+    const arrivals = stop.arrivals || [];
+    const arrivalsHtml = arrivals.length ? arrivals.map(a => {
+      const etaGreen = a.status === 'arriving';
+      const etaOrange = a.status === 'approaching';
+      const etaText = a.eta_minutes === null ? '—' : a.eta_minutes <= 1 ? 'Now' : a.eta_minutes;
+      const etaUnit = (!a.eta_minutes || a.eta_minutes <= 1) ? '' : 'min';
+      return `<div class="arrival-row">
+        <div class="arr-badge" style="background:${a.color}">${a.short_name}</div>
+        <div><div class="arr-route">${a.route_name}</div><div class="arr-bus">Bus ${a.bus_number}</div></div>
+        <div class="arr-eta">
+          <div class="eta-num ${etaGreen?'eta-green':etaOrange?'eta-orange':''}">${etaText}</div>
+          <div class="eta-unit">${etaUnit}</div>
         </div>
-        ${arrivalsHtml}
       </div>`;
+    }).join('') : '<div class="empty">No buses currently tracked on this stop\'s routes.</div>';
 
+    board.innerHTML = `<div class="arrivals-board">
+      <div class="board-hd">
+        <h3>${stop.name}</h3>
+        ${railHtml}
+      </div>
+      ${arrivalsHtml}
+    </div>`;
     document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
-  } catch (e) {
-    board.innerHTML = '<div class="empty-state">Could not load arrivals. Please try again.</div>';
+  } catch {
+    board.innerHTML = '<div class="empty">Could not load arrivals. Please try again.</div>';
   }
-}
-
-function refreshArrivals() {
-  if (selectedStopId) loadArrivals(selectedStopId);
 }
 
 init();
