@@ -3,168 +3,164 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>City Metro Bus — Admin Portal</title>
+<title>Bus Admin — City Metro Transit</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    --black: #0a0a0a;
-    --white: #ffffff;
-    --yellow: #FFD600;
-    --gray: #f0f0f0;
-    --mid: #888;
-    --border: #ddd;
-    --danger: #e53e3e;
-    --success: #38a169;
-    --panel: 320px;
-  }
-  body { font-family: Helvetica, Arial, sans-serif; background: var(--gray); color: var(--black); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --black: #111;
+  --white: #fff;
+  --yellow: #FFD600;
+  --gray: #f4f4f4;
+  --border: #e0e0e0;
+  --mid: #888;
+  --danger: #d93025;
+  --green: #1a8a3c;
+  --panel: 300px;
+}
+body { font-family: Helvetica, Arial, sans-serif; background: var(--white); color: var(--black); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-  /* ── Header ── */
-  header { background: var(--black); color: var(--white); display: flex; align-items: center; gap: 16px; padding: 0 20px; height: 52px; flex-shrink: 0; z-index: 100; }
-  header img { height: 28px; }
-  header h1 { font-size: 14px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-  header .badge { background: var(--yellow); color: var(--black); font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 8px; border-radius: 2px; }
-  .header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
-  #authStatus { font-size: 12px; color: var(--mid); }
-  #authBtn { background: var(--yellow); border: none; padding: 6px 14px; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; border-radius: 2px; }
+/* Header */
+header { background: var(--black); color: var(--white); display: flex; align-items: center; gap: 14px; padding: 0 16px; height: 50px; flex-shrink: 0; }
+header h1 { font-size: 13px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
+.hdr-badge { background: var(--yellow); color: var(--black); font-size: 9px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; }
+.hdr-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.hdr-status { font-size: 11px; color: rgba(255,255,255,0.5); }
+.hdr-btn { background: var(--yellow); border: none; padding: 5px 12px; font-family: inherit; font-size: 11px; font-weight: 800; cursor: pointer; border-radius: 2px; }
 
-  /* ── Toolbar ── */
-  .toolbar { background: var(--white); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 4px; padding: 6px 12px; flex-shrink: 0; flex-wrap: wrap; }
-  .tool-group { display: flex; align-items: center; gap: 4px; padding-right: 12px; border-right: 1px solid var(--border); margin-right: 4px; }
-  .tool-group:last-child { border-right: none; }
-  .tool-label { font-size: 10px; color: var(--mid); text-transform: uppercase; letter-spacing: 0.08em; margin-right: 4px; }
-  .tool-btn { background: var(--gray); border: 1px solid var(--border); padding: 5px 10px; font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; border-radius: 2px; transition: all 0.15s; white-space: nowrap; }
-  .tool-btn:hover { background: var(--black); color: var(--white); border-color: var(--black); }
-  .tool-btn.active { background: var(--black); color: var(--yellow); border-color: var(--black); }
-  .tool-btn.danger { border-color: var(--danger); color: var(--danger); }
-  .tool-btn.danger:hover { background: var(--danger); color: var(--white); }
-  #routeSelect { font-family: inherit; font-size: 12px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 2px; background: var(--white); min-width: 160px; }
-  #distanceDisplay { font-size: 12px; font-weight: 700; color: var(--black); background: var(--yellow); padding: 4px 10px; border-radius: 2px; }
+/* Toolbar */
+.toolbar { background: var(--white); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 6px; padding: 7px 14px; flex-shrink: 0; overflow-x: auto; }
+.tg { display: flex; align-items: center; gap: 4px; padding-right: 12px; border-right: 1px solid var(--border); margin-right: 4px; flex-shrink: 0; }
+.tg:last-child { border-right: none; }
+.tl { font-size: 9px; color: var(--mid); text-transform: uppercase; letter-spacing: 0.08em; margin-right: 2px; flex-shrink: 0; }
+.tb { background: var(--gray); border: 1px solid var(--border); padding: 5px 10px; font-family: inherit; font-size: 11px; font-weight: 600; cursor: pointer; border-radius: 2px; transition: all 0.12s; white-space: nowrap; }
+.tb:hover { background: var(--black); color: var(--white); border-color: var(--black); }
+.tb.on { background: var(--black); color: var(--yellow); border-color: var(--black); }
+#rSel { font-family: inherit; font-size: 11px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 2px; background: var(--white); min-width: 170px; }
+#distBadge { font-size: 11px; font-weight: 800; background: var(--yellow); padding: 4px 10px; border-radius: 2px; white-space: nowrap; }
 
-  /* ── Main layout ── */
-  .main { display: flex; flex: 1; overflow: hidden; }
+/* Layout */
+.main { display: flex; flex: 1; overflow: hidden; }
 
-  /* ── Canvas ── */
-  .canvas-wrap { flex: 1; position: relative; overflow: hidden; background: #e8e8e8; }
-  #mapCanvas { display: block; cursor: crosshair; }
-  .canvas-hint { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: var(--white); font-size: 11px; padding: 6px 14px; border-radius: 20px; pointer-events: none; white-space: nowrap; }
+/* Canvas */
+.cw { flex: 1; position: relative; overflow: hidden; background: #f0f0f0; }
+#cv { display: block; }
+.hint { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.72); color: #fff; font-size: 11px; padding: 5px 14px; border-radius: 20px; pointer-events: none; white-space: nowrap; }
 
-  /* ── Side panel ── */
-  .panel { width: var(--panel); background: var(--white); border-left: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden; }
-  .panel-tabs { display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-  .panel-tab { flex: 1; padding: 10px 4px; font-size: 11px; font-weight: 700; text-align: center; cursor: pointer; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mid); border-bottom: 2px solid transparent; transition: all 0.15s; }
-  .panel-tab.active { color: var(--black); border-bottom-color: var(--yellow); }
-  .panel-body { flex: 1; overflow-y: auto; padding: 14px; }
+/* Panel */
+.panel { width: var(--panel); background: var(--white); border-left: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+.ptabs { display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.ptab { flex: 1; padding: 9px 4px; font-size: 10px; font-weight: 800; text-align: center; cursor: pointer; text-transform: uppercase; letter-spacing: 0.06em; color: var(--mid); border-bottom: 2px solid transparent; transition: all 0.12s; }
+.ptab.on { color: var(--black); border-bottom-color: var(--yellow); }
+.pbody { flex: 1; overflow-y: auto; padding: 14px; }
 
-  /* ── Forms ── */
-  .form-row { margin-bottom: 12px; }
-  .form-row label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mid); margin-bottom: 4px; }
-  .form-row input, .form-row select, .form-row textarea { width: 100%; font-family: inherit; font-size: 13px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 2px; background: var(--white); }
-  .form-row input:focus, .form-row select:focus, .form-row textarea:focus { outline: none; border-color: var(--black); }
-  .form-row textarea { resize: vertical; min-height: 60px; }
-  .color-row { display: flex; align-items: center; gap: 8px; }
-  .color-row input[type=color] { width: 36px; height: 32px; padding: 2px; border: 1px solid var(--border); border-radius: 2px; cursor: pointer; }
-  .color-row input[type=text] { flex: 1; }
-  .btn { width: 100%; padding: 9px; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; border-radius: 2px; border: none; transition: all 0.15s; }
-  .btn-primary { background: var(--black); color: var(--yellow); }
-  .btn-primary:hover { background: #222; }
-  .btn-secondary { background: var(--gray); color: var(--black); border: 1px solid var(--border); margin-top: 6px; }
-  .btn-danger { background: var(--danger); color: var(--white); margin-top: 6px; }
+/* Form elements */
+.fr { margin-bottom: 11px; }
+.fr label { display: block; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.09em; color: var(--mid); margin-bottom: 4px; }
+.fr input, .fr select, .fr textarea { width: 100%; font-family: inherit; font-size: 12px; padding: 7px 9px; border: 1px solid var(--border); border-radius: 2px; background: var(--white); }
+.fr input:focus, .fr select:focus, .fr textarea:focus { outline: none; border-color: var(--black); }
+.fr textarea { min-height: 55px; resize: vertical; }
+.cr { display: flex; gap: 6px; align-items: center; }
+.cr input[type=color] { width: 34px; height: 30px; padding: 1px; border: 1px solid var(--border); border-radius: 2px; cursor: pointer; flex-shrink: 0; }
+.btn { width: 100%; padding: 8px; font-family: inherit; font-size: 12px; font-weight: 800; cursor: pointer; border-radius: 2px; border: none; }
+.btn-blk { background: var(--black); color: var(--yellow); }
+.btn-blk:hover { background: #222; }
+.btn-sec { background: var(--gray); color: var(--black); border: 1px solid var(--border); margin-top: 5px; }
+.btn-red { background: var(--danger); color: #fff; margin-top: 5px; }
+.sec-title { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.09em; color: var(--mid); margin-bottom: 9px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
 
-  /* ── Lists ── */
-  .list-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 2px; margin-bottom: 6px; cursor: pointer; transition: all 0.15s; }
-  .list-item:hover { border-color: var(--black); }
-  .list-item.selected { border-color: var(--black); background: var(--gray); }
-  .list-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .list-name { font-size: 13px; font-weight: 600; flex: 1; }
-  .list-meta { font-size: 11px; color: var(--mid); }
-  .list-del { font-size: 16px; color: var(--mid); cursor: pointer; padding: 0 4px; }
-  .list-del:hover { color: var(--danger); }
+/* List items */
+.li { display: flex; align-items: center; gap: 8px; padding: 8px 9px; border: 1px solid var(--border); border-radius: 2px; margin-bottom: 5px; cursor: pointer; transition: all 0.12s; }
+.li:hover { border-color: var(--black); }
+.li.on { border-color: var(--black); background: var(--gray); }
+.li-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.li-name { font-size: 12px; font-weight: 700; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.li-meta { font-size: 10px; color: var(--mid); flex-shrink: 0; }
+.li-del { font-size: 17px; color: var(--mid); cursor: pointer; padding: 0 2px; flex-shrink: 0; line-height: 1; }
+.li-del:hover { color: var(--danger); }
 
-  /* ── Rail connections ── */
-  .rail-tag { display: inline-flex; align-items: center; gap: 4px; background: var(--gray); border: 1px solid var(--border); border-radius: 20px; padding: 3px 8px; font-size: 11px; margin: 2px; }
-  .rail-tag .rm { cursor: pointer; color: var(--mid); font-weight: 700; }
-  .rail-tag .rm:hover { color: var(--danger); }
-  #railTagsWrap { display: flex; flex-wrap: wrap; margin-bottom: 8px; min-height: 28px; }
-  .rail-add-row { display: flex; gap: 6px; }
-  .rail-add-row select { flex: 1; font-family: inherit; font-size: 12px; padding: 5px; border: 1px solid var(--border); border-radius: 2px; }
-  .rail-add-row button { background: var(--black); color: var(--white); border: none; padding: 5px 10px; font-family: inherit; font-size: 12px; cursor: pointer; border-radius: 2px; font-weight: 700; }
+/* Rail tags */
+.rail-wrap { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 7px; min-height: 24px; }
+.rtag { display: inline-flex; align-items: center; gap: 4px; background: var(--gray); border: 1px solid var(--border); border-radius: 20px; padding: 2px 7px; font-size: 10px; }
+.rtag .rm { cursor: pointer; color: var(--mid); font-weight: 800; margin-left: 2px; }
+.rtag .rm:hover { color: var(--danger); }
+.radd { display: flex; gap: 5px; }
+.radd select, .radd input { flex: 1; font-family: inherit; font-size: 11px; padding: 5px; border: 1px solid var(--border); border-radius: 2px; }
+.radd button { background: var(--black); color: var(--white); border: none; padding: 5px 9px; font-family: inherit; font-size: 11px; cursor: pointer; border-radius: 2px; font-weight: 700; white-space: nowrap; }
 
-  /* ── Bus panel ── */
-  .speed-display { font-size: 28px; font-weight: 800; text-align: center; padding: 10px; background: var(--yellow); border-radius: 2px; margin-bottom: 10px; }
-  .speed-display span { font-size: 13px; font-weight: 400; }
+/* Speed display */
+.spd { font-size: 30px; font-weight: 900; text-align: center; padding: 10px; background: var(--yellow); border-radius: 2px; margin-bottom: 10px; line-height: 1; }
+.spd small { font-size: 12px; font-weight: 400; }
 
-  /* ── Toast ── */
-  #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--black); color: var(--white); padding: 10px 20px; border-radius: 4px; font-size: 13px; display: none; z-index: 9999; }
+/* Status dot */
+.sdot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-  /* ── Auth modal ── */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: none; align-items: center; justify-content: center; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: var(--white); padding: 28px; border-radius: 4px; width: 320px; }
-  .modal h2 { font-size: 18px; margin-bottom: 16px; }
-  .modal input { width: 100%; padding: 8px 12px; font-family: inherit; font-size: 14px; border: 1px solid var(--border); border-radius: 2px; margin-bottom: 12px; }
-  .modal button { width: 100%; padding: 10px; background: var(--black); color: var(--yellow); border: none; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; border-radius: 2px; }
+/* Toast */
+#toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--black); color: var(--white); padding: 9px 18px; border-radius: 3px; font-size: 12px; display: none; z-index: 9999; white-space: nowrap; }
 
-  section-title { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mid); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+/* Auth modal */
+.mo { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; display: none; align-items: center; justify-content: center; }
+.mo.open { display: flex; }
+.mbox { background: var(--white); padding: 24px; border-radius: 4px; width: 300px; }
+.mbox h2 { font-size: 16px; margin-bottom: 14px; }
+.mbox input { width: 100%; padding: 8px 10px; font-family: inherit; font-size: 13px; border: 1px solid var(--border); border-radius: 2px; margin-bottom: 10px; }
+.mbox button { width: 100%; padding: 9px; background: var(--black); color: var(--yellow); border: none; font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer; border-radius: 2px; }
 </style>
 </head>
 <body>
 
 <header>
-  <img src="logo.png" alt="City Metro" onerror="this.style.display='none'">
-  <h1>Bus Admin</h1>
-  <span class="badge">Management Portal</span>
-  <div class="header-right">
-    <span id="authStatus">Not authenticated</span>
-    <button id="authBtn">Sign In</button>
+  <svg width="24" height="24" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="4" fill="#333"/><rect x="5" y="10" width="22" height="14" rx="2" fill="#FFD600"/><rect x="7" y="12" width="7" height="5" rx="1" fill="#333"/><rect x="18" y="12" width="7" height="5" rx="1" fill="#333"/><circle cx="10" cy="25" r="2.5" fill="#333" stroke="#FFD600" stroke-width="1.5"/><circle cx="22" cy="25" r="2.5" fill="#333" stroke="#FFD600" stroke-width="1.5"/></svg>
+  <h1>City Metro Transit</h1>
+  <span class="hdr-badge">Bus Admin</span>
+  <div class="hdr-right">
+    <span class="hdr-status" id="hdrStatus">Not signed in</span>
+    <button class="hdr-btn" id="hdrBtn" onclick="toggleAuth()">Sign In</button>
   </div>
 </header>
 
 <div class="toolbar">
-  <div class="tool-group">
-    <span class="tool-label">Route</span>
-    <select id="routeSelect"><option value="">— Select route —</option></select>
+  <div class="tg">
+    <span class="tl">Route</span>
+    <select id="rSel"><option value="">— Select route —</option></select>
   </div>
-  <div class="tool-group">
-    <span class="tool-label">Draw</span>
-    <button class="tool-btn" id="toolDraw" onclick="setTool('draw')">✏ Draw Route</button>
-    <button class="tool-btn" id="toolStop" onclick="setTool('stop')">● Place Stop</button>
-    <button class="tool-btn" id="toolSelect" onclick="setTool('select')">↖ Select</button>
-    <button class="tool-btn" id="toolBus" onclick="setTool('bus')">🚌 Place Bus</button>
+  <div class="tg">
+    <span class="tl">Tool</span>
+    <button class="tb" id="tDraw" onclick="setTool('draw')">✏ Draw</button>
+    <button class="tb" id="tStop" onclick="setTool('stop')">● Stop</button>
+    <button class="tb" id="tSelect" onclick="setTool('select')">↖ Select</button>
+    <button class="tb" id="tBus" onclick="setTool('bus')">🚌 Bus</button>
   </div>
-  <div class="tool-group">
-    <button class="tool-btn" onclick="undoLastPoint()">↩ Undo</button>
-    <button class="tool-btn" onclick="clearRoute()">Clear Route</button>
-    <button class="tool-btn" onclick="saveRoute()">💾 Save Route</button>
+  <div class="tg">
+    <button class="tb" onclick="undoPt()">↩ Undo</button>
+    <button class="tb" onclick="clearPts()">Clear Path</button>
+    <button class="tb" onclick="savePath()">💾 Save Path</button>
   </div>
-  <div class="tool-group">
-    <span id="distanceDisplay">0.00 mi total</span>
+  <div class="tg">
+    <span id="distBadge">0.00 mi</span>
   </div>
 </div>
 
 <div class="main">
-  <div class="canvas-wrap">
-    <canvas id="mapCanvas"></canvas>
-    <div class="canvas-hint" id="hint">Select a route and tool to begin editing</div>
+  <div class="cw">
+    <canvas id="cv"></canvas>
+    <div class="hint" id="hint">Sign in and select or create a route to begin</div>
   </div>
-
   <div class="panel">
-    <div class="panel-tabs">
-      <div class="panel-tab active" onclick="showTab('routes')">Routes</div>
-      <div class="panel-tab" onclick="showTab('stops')">Stops</div>
-      <div class="panel-tab" onclick="showTab('buses')">Buses</div>
+    <div class="ptabs">
+      <div class="ptab on" data-tab="routes" onclick="showTab('routes')">Routes</div>
+      <div class="ptab" data-tab="stops" onclick="showTab('stops')">Stops</div>
+      <div class="ptab" data-tab="buses" onclick="showTab('buses')">Buses</div>
     </div>
-    <div class="panel-body" id="panelBody">
-      <!-- content injected by JS -->
-    </div>
+    <div class="pbody" id="pbody"></div>
   </div>
 </div>
 
 <!-- Auth modal -->
-<div class="modal-overlay" id="authModal">
-  <div class="modal">
+<div class="mo" id="mo" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="mbox">
     <h2>Admin Sign In</h2>
-    <input type="password" id="adminKeyInput" placeholder="Admin key">
+    <input type="password" id="keyInput" placeholder="Admin key" onkeydown="if(event.key==='Enter')doAuth()">
     <button onclick="doAuth()">Sign In</button>
   </div>
 </div>
@@ -172,778 +168,714 @@
 <div id="toast"></div>
 
 <script>
-// ── Config ──────────────────────────────────────────────────
-const API = 'https://city-metro-bus-api.felixfeger46.workers.dev/'; // ← update after deploying worker
+// ── Config ──────────────────────────────────────────────────────
+const API = 'https://city-metro-bus-api.felixfeger46.workers.dev';
 const RAIL_LINES = [
-  { id: 'A', name: 'A Line', color: '#0057A8' },
-  { id: 'B', name: 'B Line', color: '#CC0000' },
-  { id: 'D', name: 'D Line', color: '#7B2D8B' },
-  { id: 'E', name: 'E Line', color: '#F5A623' },
-  { id: 'F', name: 'F Line', color: '#FF6B00' },
-  { id: 'K', name: 'K Line', color: '#E91E8C' },
+  { id:'A', name:'A Line', color:'#0057A8' },
+  { id:'B', name:'B Line', color:'#CC0000' },
+  { id:'D', name:'D Line', color:'#7B2D8B' },
+  { id:'E', name:'E Line', color:'#F5A623' },
+  { id:'F', name:'F Line', color:'#FF6B00' },
+  { id:'K', name:'K Line', color:'#E91E8C' },
 ];
 
-// ── State ───────────────────────────────────────────────────
-let adminKey = localStorage.getItem('busAdminKey') || '';
-let currentTool = 'select';
-let currentRoute = null;
-let routes = [];
-let stops = [];
-let buses = [];
-let drawPoints = []; // current unsaved route path
-let selectedStop = null;
-let selectedBus = null;
-let activeTab = 'routes';
-let dragTarget = null;
-let dragOffX = 0, dragOffY = 0;
+// ── State ────────────────────────────────────────────────────────
+let key = localStorage.getItem('cmt_bus_key') || '';
+let tool = 'select';
+let routes = [], stops = [], buses = [];
+let activeRoute = null;
+let pts = [];          // current draw path (unsaved)
+let selStop = null;
+let selBus = null;
+let tab = 'routes';
+let drag = null;
 
-// ── Canvas ──────────────────────────────────────────────────
-const canvas = document.getElementById('mapCanvas');
-const ctx = canvas.getContext('2d');
+// ── Canvas ───────────────────────────────────────────────────────
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
 
-function resizeCanvas() {
-  const wrap = canvas.parentElement;
-  canvas.width = wrap.clientWidth;
-  canvas.height = wrap.clientHeight;
+function resizeCv() {
+  const w = cv.parentElement;
+  cv.width = w.clientWidth;
+  cv.height = w.clientHeight;
   render();
 }
+window.addEventListener('resize', resizeCv);
 
-window.addEventListener('resize', resizeCanvas);
+// ── Auth ─────────────────────────────────────────────────────────
+function toggleAuth() {
+  if (key) {
+    key = '';
+    localStorage.removeItem('cmt_bus_key');
+    document.getElementById('hdrStatus').textContent = 'Not signed in';
+    document.getElementById('hdrBtn').textContent = 'Sign In';
+    toast('Signed out');
+  } else {
+    document.getElementById('keyInput').value = '';
+    document.getElementById('mo').classList.add('open');
+    setTimeout(() => document.getElementById('keyInput').focus(), 100);
+  }
+}
 
-// ── Auth ─────────────────────────────────────────────────────
 function doAuth() {
-  const key = document.getElementById('adminKeyInput').value.trim();
-  if (!key) return;
-  adminKey = key;
-  localStorage.setItem('busAdminKey', key);
-  document.getElementById('authModal').classList.remove('open');
-  document.getElementById('authStatus').textContent = 'Authenticated';
-  document.getElementById('authBtn').textContent = 'Sign Out';
+  const v = document.getElementById('keyInput').value.trim();
+  if (!v) return;
+  key = v;
+  localStorage.setItem('cmt_bus_key', key);
+  document.getElementById('mo').classList.remove('open');
+  document.getElementById('hdrStatus').textContent = 'Authenticated';
+  document.getElementById('hdrBtn').textContent = 'Sign Out';
   toast('Signed in');
   loadAll();
 }
 
-function toggleAuth() {
-  if (adminKey) {
-    adminKey = '';
-    localStorage.removeItem('busAdminKey');
-    document.getElementById('authStatus').textContent = 'Not authenticated';
-    document.getElementById('authBtn').textContent = 'Sign In';
-    toast('Signed out');
-  } else {
-    document.getElementById('authModal').classList.add('open');
-    document.getElementById('adminKeyInput').value = '';
-  }
+if (key) {
+  document.getElementById('hdrStatus').textContent = 'Authenticated';
+  document.getElementById('hdrBtn').textContent = 'Sign Out';
 }
 
-document.getElementById('authBtn').addEventListener('click', toggleAuth);
-document.getElementById('authModal').addEventListener('click', e => {
-  if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
-});
-
-if (adminKey) {
-  document.getElementById('authStatus').textContent = 'Authenticated';
-  document.getElementById('authBtn').textContent = 'Sign Out';
-}
-
-// ── API helpers ───────────────────────────────────────────────
-async function apiFetch(path, method = 'GET', body = null) {
-  const opts = {
-    method,
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminKey}` },
-  };
+// ── API ───────────────────────────────────────────────────────────
+async function api(path, method='GET', body=null) {
+  const opts = { method, headers: { 'Content-Type':'application/json', Authorization:`Bearer ${key}` } };
   if (body) opts.body = JSON.stringify(body);
   try {
-    const res = await fetch(API + path, opts);
-    return await res.json();
-  } catch (e) {
-    toast('API error: ' + e.message);
-    return null;
-  }
+    const r = await fetch(API + path, opts);
+    const d = await r.json();
+    if (d.error) { toast('Error: ' + d.error); return null; }
+    return d;
+  } catch(e) { toast('Network error'); return null; }
 }
 
-// ── Load data ─────────────────────────────────────────────────
+// ── Load all data ─────────────────────────────────────────────────
 async function loadAll() {
-  [routes, stops, buses] = await Promise.all([
-    apiFetch('/api/routes'),
-    apiFetch('/api/stops'),
-    apiFetch('/api/buses'),
+  const [r, s, b] = await Promise.all([
+    api('/api/routes'),
+    api('/api/stops'),
+    api('/api/buses'),
   ]);
-  routes = routes || [];
-  stops = stops || [];
-  buses = buses || [];
-  buildRouteSelect();
+  routes = Array.isArray(r) ? r : [];
+  stops  = Array.isArray(s) ? s : [];
+  buses  = Array.isArray(b) ? b : [];
+  rebuildRouteSelect();
   renderPanel();
   render();
 }
 
-function buildRouteSelect() {
-  const sel = document.getElementById('routeSelect');
+function rebuildRouteSelect() {
+  const sel = document.getElementById('rSel');
+  const prev = sel.value;
   sel.innerHTML = '<option value="">— Select route —</option>';
   routes.forEach(r => {
     const o = document.createElement('option');
     o.value = r.id;
-    o.textContent = `${r.short_name} — ${r.name}`;
+    o.textContent = `${r.short_name} – ${r.name}`;
     sel.appendChild(o);
   });
+  // Restore selection if still valid
+  if (prev && routes.find(r => r.id === prev)) sel.value = prev;
 }
 
-document.getElementById('routeSelect').addEventListener('change', e => {
-  currentRoute = routes.find(r => r.id === e.target.value) || null;
-  if (currentRoute) {
-    drawPoints = JSON.parse(currentRoute.path_data || '[]');
-  } else {
-    drawPoints = [];
-  }
-  selectedStop = null;
-  selectedBus = null;
-  updateDistanceDisplay();
+document.getElementById('rSel').addEventListener('change', e => {
+  activeRoute = routes.find(r => r.id === e.target.value) || null;
+  pts = activeRoute ? parsePts(activeRoute.path_data) : [];
+  selStop = null; selBus = null;
+  updateDist();
+  renderPanel();
   render();
 });
 
-// ── Tool ─────────────────────────────────────────────────────
-function setTool(tool) {
-  currentTool = tool;
-  document.querySelectorAll('.tool-btn[id^=tool]').forEach(b => b.classList.remove('active'));
-  const btn = document.getElementById('tool' + tool.charAt(0).toUpperCase() + tool.slice(1));
-  if (btn) btn.classList.add('active');
+function parsePts(data) {
+  try { return JSON.parse(data || '[]'); } catch { return []; }
+}
+
+// ── Tool ──────────────────────────────────────────────────────────
+function setTool(t) {
+  tool = t;
+  document.querySelectorAll('.tb[id^=t]').forEach(b => b.classList.remove('on'));
+  const btn = document.getElementById('t' + t.charAt(0).toUpperCase() + t.slice(1));
+  if (btn) btn.classList.add('on');
   const hints = {
-    draw: 'Click to add waypoints along the route. Right-click to finish.',
-    stop: 'Click to place a bus stop on the map.',
-    select: 'Click stops or buses to select and edit them.',
-    bus: 'Click on the route to place a bus.',
+    draw: 'Click to add waypoints. Right-click or Save Path when done.',
+    stop: 'Click on the canvas to place a bus stop.',
+    select: 'Click a stop or bus to select and edit it. Drag to move.',
+    bus: 'Click anywhere on canvas to place a bus on the active route.',
   };
-  document.getElementById('hint').textContent = hints[tool] || '';
+  document.getElementById('hint').textContent = hints[t] || '';
 }
 setTool('select');
 
-// ── Canvas events ─────────────────────────────────────────────
-canvas.addEventListener('mousedown', onMouseDown);
-canvas.addEventListener('mousemove', onMouseMove);
-canvas.addEventListener('mouseup', onMouseUp);
-canvas.addEventListener('contextmenu', e => {
-  e.preventDefault();
-  if (currentTool === 'draw') saveRoute();
-});
+// ── Canvas interactions ───────────────────────────────────────────
+cv.addEventListener('mousedown', onDown);
+cv.addEventListener('mousemove', onMove);
+cv.addEventListener('mouseup', onUp);
+cv.addEventListener('contextmenu', e => { e.preventDefault(); if(tool==='draw') savePath(); });
 
-function getPos(e) {
-  const rect = canvas.getBoundingClientRect();
-  return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+function pos(e) {
+  const r = cv.getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
 }
+function dist2(a, b) { return Math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2); }
 
-function onMouseDown(e) {
+function onDown(e) {
   if (e.button !== 0) return;
-  const pos = getPos(e);
+  const p = pos(e);
 
-  if (currentTool === 'select') {
-    // Check stops
-    const hit = stops.find(s => dist(pos, s) < 14);
-    if (hit) {
-      selectedStop = hit;
-      selectedBus = null;
-      dragTarget = { type: 'stop', obj: hit };
-      dragOffX = pos.x - hit.x;
-      dragOffY = pos.y - hit.y;
-      showTab('stops');
-      renderPanel();
-      render();
-      return;
+  if (tool === 'select') {
+    const hitStop = stops.find(s => dist2(p, s) < 14);
+    if (hitStop) {
+      selStop = hitStop; selBus = null;
+      drag = { type:'stop', obj:hitStop, ox:p.x-hitStop.x, oy:p.y-hitStop.y };
+      showTab('stops'); renderPanel(); render(); return;
     }
-    // Check buses
-    const hitBus = buses.find(b => dist(pos, { x: b.current_x, y: b.current_y }) < 16);
+    const hitBus = buses.find(b => dist2(p, {x:b.current_x, y:b.current_y}) < 16);
     if (hitBus) {
-      selectedBus = hitBus;
-      selectedStop = null;
-      dragTarget = { type: 'bus', obj: hitBus };
-      dragOffX = pos.x - hitBus.current_x;
-      dragOffY = pos.y - hitBus.current_y;
-      showTab('buses');
-      renderPanel();
-      render();
-      return;
+      selBus = hitBus; selStop = null;
+      drag = { type:'bus', obj:hitBus, ox:p.x-hitBus.current_x, oy:p.y-hitBus.current_y };
+      showTab('buses'); renderPanel(); render(); return;
     }
-    selectedStop = null;
-    selectedBus = null;
-    renderPanel();
-    render();
-    return;
+    selStop = null; selBus = null; renderPanel(); render(); return;
   }
 
-  if (currentTool === 'draw') {
-    if (!currentRoute) { toast('Select a route first'); return; }
-    drawPoints.push({ x: pos.x, y: pos.y });
-    updateDistanceDisplay();
-    render();
-    return;
+  if (tool === 'draw') {
+    if (!activeRoute) { toast('Select a route first'); return; }
+    pts.push({x:p.x, y:p.y});
+    updateDist(); render(); return;
   }
 
-  if (currentTool === 'stop') {
-    if (!currentRoute) { toast('Select a route first'); return; }
-    placeStop(pos);
-    return;
+  if (tool === 'stop') {
+    if (!activeRoute) { toast('Select a route first'); return; }
+    placeStop(p); return;
   }
 
-  if (currentTool === 'bus') {
-    if (!currentRoute) { toast('Select a route first'); return; }
-    placeBus(pos);
-    return;
+  if (tool === 'bus') {
+    if (!activeRoute) { toast('Select a route first'); return; }
+    placeBus(p); return;
   }
 }
 
-function onMouseMove(e) {
-  if (!dragTarget) return;
-  const pos = getPos(e);
-  if (dragTarget.type === 'stop') {
-    dragTarget.obj.x = pos.x - dragOffX;
-    dragTarget.obj.y = pos.y - dragOffY;
-  } else if (dragTarget.type === 'bus') {
-    dragTarget.obj.current_x = pos.x - dragOffX;
-    dragTarget.obj.current_y = pos.y - dragOffY;
-  }
+function onMove(e) {
+  if (!drag) return;
+  const p = pos(e);
+  if (drag.type === 'stop') { drag.obj.x = p.x - drag.ox; drag.obj.y = p.y - drag.oy; }
+  else if (drag.type === 'bus') { drag.obj.current_x = p.x - drag.ox; drag.obj.current_y = p.y - drag.oy; }
   render();
 }
 
-async function onMouseUp(e) {
-  if (!dragTarget) return;
-  if (dragTarget.type === 'stop') {
-    const s = dragTarget.obj;
-    await apiFetch(`/api/stops/${s.id}`, 'PUT', { x: s.x, y: s.y });
-  } else if (dragTarget.type === 'bus') {
-    const b = dragTarget.obj;
-    await apiFetch(`/api/buses/${b.id}`, 'PUT', { current_x: b.current_x, current_y: b.current_y });
+async function onUp() {
+  if (!drag) return;
+  if (drag.type === 'stop') {
+    const s = drag.obj;
+    await api(`/api/stops/${s.id}`, 'PUT', {x:s.x, y:s.y});
+  } else if (drag.type === 'bus') {
+    const b = drag.obj;
+    await api(`/api/buses/${b.id}`, 'PUT', {current_x:b.current_x, current_y:b.current_y});
   }
-  dragTarget = null;
+  drag = null;
 }
 
-function dist(a, b) {
-  return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
-}
+// ── Path actions ──────────────────────────────────────────────────
+function undoPt() { pts.pop(); updateDist(); render(); }
+function clearPts() { if(confirm('Clear all waypoints?')) { pts=[]; updateDist(); render(); } }
 
-// ── Route actions ─────────────────────────────────────────────
-function undoLastPoint() {
-  drawPoints.pop();
-  updateDistanceDisplay();
-  render();
-}
-
-function clearRoute() {
-  if (!confirm('Clear all waypoints?')) return;
-  drawPoints = [];
-  updateDistanceDisplay();
-  render();
-}
-
-function calcRouteDistance(points) {
+function calcDist(p) {
   let d = 0;
-  for (let i = 1; i < points.length; i++) {
-    d += dist(points[i - 1], points[i]);
-  }
-  return d; // in "inches" = miles on 1:1 scale
+  for(let i=1;i<p.length;i++) d += dist2(p[i-1],p[i]);
+  return d;
+}
+function updateDist() {
+  document.getElementById('distBadge').textContent = calcDist(pts).toFixed(2) + ' mi total';
 }
 
-function updateDistanceDisplay() {
-  const d = calcRouteDistance(drawPoints);
-  document.getElementById('distanceDisplay').textContent = d.toFixed(2) + ' mi total';
-}
-
-async function saveRoute() {
-  if (!currentRoute) { toast('No route selected'); return; }
-  const total = calcRouteDistance(drawPoints);
-
-  // Build stops order by proximity to route
-  const routeStops = stops.filter(s => {
-    const r = JSON.parse(s.routes || '[]');
-    return r.includes(currentRoute.id);
-  });
-
-  await apiFetch(`/api/routes/${currentRoute.id}`, 'PUT', {
-    path_data: drawPoints,
-    total_distance: total,
-  });
-
-  currentRoute.path_data = JSON.stringify(drawPoints);
-  currentRoute.total_distance = total;
-  toast('Route saved ✓');
-  render();
-}
-
-// ── Stop placement ────────────────────────────────────────────
-async function placeStop(pos) {
-  const name = prompt('Stop name:');
-  if (!name) return;
-
-  const data = await apiFetch('/api/stops', 'POST', {
-    name, x: pos.x, y: pos.y,
-    routes: currentRoute ? [currentRoute.id] : [],
-  });
-  if (data?.id) {
-    const newStop = { id: data.id, name, x: pos.x, y: pos.y, routes: JSON.stringify(currentRoute ? [currentRoute.id] : []), rail_connections: '[]' };
-    stops.push(newStop);
-    selectedStop = newStop;
-    showTab('stops');
-    renderPanel();
+async function savePath() {
+  if (!activeRoute) { toast('No route selected'); return; }
+  const d = calcDist(pts);
+  const res = await api(`/api/routes/${activeRoute.id}`, 'PUT', { path_data: pts, total_distance: d });
+  if (res) {
+    activeRoute.path_data = JSON.stringify(pts);
+    activeRoute.total_distance = d;
+    const idx = routes.findIndex(r=>r.id===activeRoute.id);
+    if(idx>=0) routes[idx] = {...routes[idx], path_data:JSON.stringify(pts), total_distance:d};
+    toast('Path saved ✓');
     render();
+  }
+}
+
+// ── Stop placement ────────────────────────────────────────────────
+async function placeStop(p) {
+  const name = prompt('Stop name:');
+  if (!name?.trim()) return;
+  const res = await api('/api/stops', 'POST', {
+    name: name.trim(),
+    x: p.x, y: p.y,
+    routes: activeRoute ? [activeRoute.id] : [],
+    rail_connections: [],
+  });
+  if (res?.id) {
+    const ns = { id:res.id, name:name.trim(), x:p.x, y:p.y, routes:JSON.stringify(activeRoute?[activeRoute.id]:[]), rail_connections:'[]' };
+    stops.push(ns);
+    selStop = ns; selBus = null;
+    showTab('stops');
+    renderPanel(); render();
     toast('Stop placed ✓');
   }
 }
 
-// ── Bus placement ─────────────────────────────────────────────
-async function placeBus(pos) {
-  const busNumber = prompt('Bus number (e.g. 101):');
-  if (!busNumber) return;
-
-  const data = await apiFetch('/api/buses', 'POST', {
-    route_id: currentRoute.id,
-    bus_number: busNumber,
-    current_x: pos.x,
-    current_y: pos.y,
+// ── Bus placement ─────────────────────────────────────────────────
+async function placeBus(p) {
+  const num = prompt('Bus number (e.g. 101):');
+  if (!num?.trim()) return;
+  const res = await api('/api/buses', 'POST', {
+    route_id: activeRoute.id,
+    bus_number: num.trim(),
+    current_x: p.x, current_y: p.y,
     current_speed: 25,
     status: 'in_service',
   });
-  if (data?.id) {
-    const newBus = {
-      id: data.id, bus_number: busNumber,
-      route_id: currentRoute.id, current_x: pos.x, current_y: pos.y,
-      current_speed: 25, status: 'in_service',
-      route_name: currentRoute.name, short_name: currentRoute.short_name, color: currentRoute.color,
+  if (res?.id) {
+    const nb = {
+      id:res.id, bus_number:num.trim(),
+      route_id:activeRoute.id, current_x:p.x, current_y:p.y,
+      current_speed:25, status:'in_service',
+      route_name:activeRoute.name, short_name:activeRoute.short_name, color:activeRoute.color,
     };
-    buses.push(newBus);
-    selectedBus = newBus;
+    buses.push(nb);
+    selBus = nb; selStop = null;
     showTab('buses');
-    renderPanel();
-    render();
+    renderPanel(); render();
     toast('Bus placed ✓');
   }
 }
 
-// ── Render ────────────────────────────────────────────────────
+// ── Render ────────────────────────────────────────────────────────
 function render() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const W=cv.width, H=cv.height;
+  ctx.clearRect(0,0,W,H);
 
-  // Background grid
-  ctx.strokeStyle = '#d0d0d0';
+  // Background
+  ctx.fillStyle = '#eeeeee';
+  ctx.fillRect(0,0,W,H);
+
+  // Grid
+  ctx.strokeStyle = '#d8d8d8';
   ctx.lineWidth = 1;
-  for (let x = 0; x < canvas.width; x += 50) {
-    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-  }
-  for (let y = 0; y < canvas.height; y += 50) {
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
-  }
+  for(let x=0;x<W;x+=50){ ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke(); }
+  for(let y=0;y<H;y+=50){ ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke(); }
 
-  // Scale indicator
-  ctx.fillStyle = '#888';
+  // Scale label
+  ctx.fillStyle = '#aaa';
   ctx.font = '10px Helvetica';
-  ctx.fillText('1 inch = 1 mile', 8, canvas.height - 8);
+  ctx.fillText('1 px = 1 mi', 8, H-8);
 
-  // Draw all saved routes
+  // All saved routes
   routes.forEach(route => {
-    const pts = JSON.parse(route.path_data || '[]');
-    if (pts.length < 2) return;
+    const rpts = parsePts(route.path_data);
+    if(rpts.length < 2) return;
     ctx.strokeStyle = route.color || '#FFD600';
-    ctx.lineWidth = route.id === currentRoute?.id ? 5 : 3;
+    ctx.lineWidth = route.id === activeRoute?.id ? 5 : 3;
+    ctx.globalAlpha = route.id === activeRoute?.id ? 1 : 0.45;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.globalAlpha = route.id === currentRoute?.id ? 1 : 0.5;
     ctx.beginPath();
-    ctx.moveTo(pts[0].x, pts[0].y);
-    pts.forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.moveTo(rpts[0].x, rpts[0].y);
+    rpts.forEach(p => ctx.lineTo(p.x,p.y));
     ctx.stroke();
     ctx.globalAlpha = 1;
   });
 
-  // Draw current unsaved path
-  if (drawPoints.length > 0 && currentRoute) {
-    ctx.strokeStyle = currentRoute.color || '#FFD600';
+  // Unsaved draw path
+  if(pts.length > 0 && activeRoute) {
+    ctx.strokeStyle = activeRoute.color || '#FFD600';
     ctx.lineWidth = 5;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.setLineDash([8, 4]);
+    ctx.setLineDash([8,4]);
     ctx.beginPath();
-    ctx.moveTo(drawPoints[0].x, drawPoints[0].y);
-    drawPoints.forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.moveTo(pts[0].x, pts[0].y);
+    pts.forEach(p => ctx.lineTo(p.x,p.y));
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // Distance labels between waypoints
-    ctx.fillStyle = '#333';
-    ctx.font = 'bold 10px Helvetica';
-    for (let i = 1; i < drawPoints.length; i++) {
-      const d = dist(drawPoints[i - 1], drawPoints[i]).toFixed(2);
-      const mx = (drawPoints[i - 1].x + drawPoints[i].x) / 2;
-      const my = (drawPoints[i - 1].y + drawPoints[i].y) / 2;
+    // Segment distance labels
+    for(let i=1;i<pts.length;i++) {
+      const d = dist2(pts[i-1],pts[i]).toFixed(2);
+      const mx = (pts[i-1].x + pts[i].x)/2;
+      const my = (pts[i-1].y + pts[i].y)/2;
       ctx.fillStyle = 'rgba(255,255,255,0.85)';
-      ctx.fillRect(mx - 22, my - 12, 44, 16);
+      ctx.fillRect(mx-24,my-13,48,16);
       ctx.fillStyle = '#333';
-      ctx.fillText(d + ' mi', mx - 18, my);
+      ctx.font = 'bold 9px Helvetica';
+      ctx.textAlign = 'center';
+      ctx.fillText(d+' mi', mx, my-0.5);
+      ctx.textAlign = 'left';
     }
 
     // Waypoint dots
-    drawPoints.forEach((p, i) => {
-      ctx.fillStyle = i === 0 ? '#00A651' : currentRoute.color;
+    pts.forEach((p,i) => {
+      ctx.fillStyle = i===0 ? '#22aa55' : (activeRoute.color||'#FFD600');
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+      ctx.arc(p.x,p.y,4,0,Math.PI*2);
       ctx.fill();
     });
   }
 
-  // Draw stops
-  stops.forEach(stop => {
-    const isSelected = selectedStop?.id === stop.id;
-    const railConns = JSON.parse(stop.rail_connections || '[]');
-    const hasRail = railConns.length > 0;
-
-    // Stop circle
-    ctx.fillStyle = isSelected ? '#FFD600' : '#ffffff';
-    ctx.strokeStyle = isSelected ? '#000' : '#333';
-    ctx.lineWidth = isSelected ? 3 : 2;
+  // Stops
+  stops.forEach(s => {
+    const isSel = selStop?.id === s.id;
+    const hasRail = (() => { try { return JSON.parse(s.rail_connections||'[]').length > 0; } catch { return false; } })();
+    ctx.fillStyle = isSel ? '#FFD600' : '#fff';
+    ctx.strokeStyle = isSel ? '#000' : '#444';
+    ctx.lineWidth = isSel ? 3 : 2;
     ctx.beginPath();
-    ctx.arc(stop.x, stop.y, isSelected ? 11 : 8, 0, Math.PI * 2);
+    ctx.arc(s.x, s.y, isSel ? 10 : 7, 0, Math.PI*2);
     ctx.fill();
     ctx.stroke();
-
-    // Rail indicator
-    if (hasRail) {
+    if(hasRail) {
       ctx.fillStyle = '#0057A8';
       ctx.beginPath();
-      ctx.arc(stop.x + 6, stop.y - 6, 4, 0, Math.PI * 2);
+      ctx.arc(s.x+5, s.y-5, 4, 0, Math.PI*2);
       ctx.fill();
     }
-
-    // Label
     ctx.fillStyle = '#111';
-    ctx.font = isSelected ? 'bold 12px Helvetica' : '11px Helvetica';
-    ctx.fillText(stop.name, stop.x + 12, stop.y + 4);
+    ctx.font = isSel ? 'bold 12px Helvetica' : '11px Helvetica';
+    ctx.fillText(s.name, s.x+13, s.y+4);
   });
 
-  // Draw buses
-  buses.forEach(bus => {
-    const x = bus.current_x, y = bus.current_y;
-    const isSelected = selectedBus?.id === bus.id;
-    const color = bus.color || '#FFD600';
-
-    // Bus body
+  // Buses
+  buses.forEach(b => {
+    const x=b.current_x, y=b.current_y;
+    const isSel = selBus?.id === b.id;
+    const color = b.color || '#FFD600';
     ctx.fillStyle = color;
-    ctx.strokeStyle = isSelected ? '#000' : '#333';
-    ctx.lineWidth = isSelected ? 3 : 1.5;
-    roundRect(ctx, x - 14, y - 9, 28, 18, 3);
-    ctx.fill();
-    ctx.stroke();
-
-    // Bus number
+    ctx.strokeStyle = isSel ? '#000' : '#444';
+    ctx.lineWidth = isSel ? 3 : 1.5;
+    rr(ctx, x-13, y-8, 26,16, 3);
+    ctx.fill(); ctx.stroke();
     ctx.fillStyle = '#000';
-    ctx.font = 'bold 9px Helvetica';
+    ctx.font = 'bold 8px Helvetica';
     ctx.textAlign = 'center';
-    ctx.fillText(bus.short_name || bus.bus_number, x, y + 3);
+    ctx.fillText(b.short_name || b.bus_number || '', x, y+3);
     ctx.textAlign = 'left';
-
-    // Speed label
-    if (bus.current_speed > 0) {
-      ctx.fillStyle = 'rgba(0,0,0,0.7)';
+    if(b.current_speed > 0) {
+      ctx.fillStyle = 'rgba(0,0,0,0.6)';
       ctx.font = '9px Helvetica';
-      ctx.fillText(bus.current_speed + ' mph', x - 14, y - 12);
+      ctx.fillText(b.current_speed+' mph', x-13, y-11);
     }
   });
 }
 
-function roundRect(ctx, x, y, w, h, r) {
+function rr(ctx,x,y,w,h,r){
   ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);
   ctx.closePath();
 }
 
-// ── Panel ─────────────────────────────────────────────────────
-function showTab(tab) {
-  activeTab = tab;
-  document.querySelectorAll('.panel-tab').forEach((t, i) => {
-    t.classList.toggle('active', ['routes', 'stops', 'buses'][i] === tab);
-  });
+// ── Panel ─────────────────────────────────────────────────────────
+function showTab(t) {
+  tab = t;
+  document.querySelectorAll('.ptab').forEach(el => el.classList.toggle('on', el.dataset.tab === t));
   renderPanel();
 }
 
-document.querySelectorAll('.panel-tab').forEach((t, i) => {
-  t.addEventListener('click', () => showTab(['routes', 'stops', 'buses'][i]));
-});
-
 function renderPanel() {
-  const body = document.getElementById('panelBody');
-  if (activeTab === 'routes') renderRoutesPanel(body);
-  else if (activeTab === 'stops') renderStopsPanel(body);
-  else renderBusesPanel(body);
+  const body = document.getElementById('pbody');
+  if (tab==='routes') renderRoutes(body);
+  else if (tab==='stops') renderStops(body);
+  else renderBuses(body);
 }
 
-function renderRoutesPanel(body) {
-  let html = `
-    <section-title>New Route</section-title>
-    <div class="form-row"><label>Route Name</label><input id="rName" placeholder="1 - Downtown Express"></div>
-    <div class="form-row"><label>Short Name</label><input id="rShort" placeholder="1" maxlength="4"></div>
-    <div class="form-row"><label>Color</label><div class="color-row"><input type="color" id="rColorPicker" value="#FFD600" oninput="document.getElementById('rColor').value=this.value"><input type="text" id="rColor" value="#FFD600" oninput="document.getElementById('rColorPicker').value=this.value"></div></div>
-    <div class="form-row"><label>Description</label><textarea id="rDesc"></textarea></div>
-    <button class="btn btn-primary" onclick="createRoute()">+ Create Route</button>
-    <div style="margin:16px 0;border-top:1px solid #ddd;padding-top:12px">
-      <section-title>All Routes</section-title>`;
-
-  routes.forEach(r => {
-    const selected = currentRoute?.id === r.id;
-    html += `<div class="list-item ${selected ? 'selected' : ''}" onclick="selectRoute('${r.id}')">
-      <div class="list-dot" style="background:${r.color}"></div>
-      <div>
-        <div class="list-name">${r.short_name} — ${r.name}</div>
-        <div class="list-meta">${r.total_distance ? r.total_distance.toFixed(2) + ' mi' : 'No path'}</div>
+// ── Routes tab ────────────────────────────────────────────────────
+function renderRoutes(body) {
+  let h = `
+    <div class="sec-title">New Route</div>
+    <div class="fr"><label>Route Name</label><input id="rName" placeholder="1 – Downtown Express"></div>
+    <div class="fr"><label>Short Name</label><input id="rShort" placeholder="1" maxlength="4"></div>
+    <div class="fr"><label>Color</label>
+      <div class="cr">
+        <input type="color" id="rCP" value="#FFD600" oninput="document.getElementById('rCT').value=this.value">
+        <input type="text" id="rCT" value="#FFD600" oninput="document.getElementById('rCP').value=this.value">
       </div>
-      <span class="list-del" onclick="deleteRoute(event,'${r.id}')">×</span>
-    </div>`;
-  });
+    </div>
+    <div class="fr"><label>Description</label><textarea id="rDesc"></textarea></div>
+    <button class="btn btn-blk" onclick="createRoute()">+ Create Route</button>
+    <hr class="divider">
+    <div class="sec-title">All Routes (${routes.length})</div>`;
 
-  html += `</div>`;
-  body.innerHTML = html;
+  if (!routes.length) {
+    h += '<p style="font-size:12px;color:#aaa">No routes yet. Create one above.</p>';
+  } else {
+    routes.forEach(r => {
+      const isSel = activeRoute?.id === r.id;
+      h += `<div class="li ${isSel?'on':''}" onclick="selectRoute('${r.id}')">
+        <div class="li-dot" style="background:${r.color}"></div>
+        <div style="flex:1;min-width:0">
+          <div class="li-name">${r.short_name} – ${r.name}</div>
+          <div class="li-meta">${r.total_distance ? r.total_distance.toFixed(2)+' mi' : 'No path'}</div>
+        </div>
+        <span class="li-del" onclick="delRoute(event,'${r.id}')">×</span>
+      </div>`;
+    });
+  }
+
+  body.innerHTML = h;
 }
 
 async function createRoute() {
+  if (!key) { toast('Sign in first'); return; }
   const name = document.getElementById('rName').value.trim();
   const short_name = document.getElementById('rShort').value.trim();
-  const color = document.getElementById('rColor').value.trim();
+  const color = document.getElementById('rCT').value.trim() || '#FFD600';
   const description = document.getElementById('rDesc').value.trim();
-  if (!name || !short_name) { toast('Name and short name required'); return; }
-  const data = await apiFetch('/api/routes', 'POST', { name, short_name, color, description });
-  if (data?.id) {
-    routes.push({ id: data.id, name, short_name, color, description, path_data: '[]', stops_order: '[]', total_distance: 0 });
-    buildRouteSelect();
+  if (!name || !short_name) { toast('Name and short name are required'); return; }
+  const res = await api('/api/routes', 'POST', { name, short_name, color, description });
+  if (res?.id) {
+    const nr = { id:res.id, name, short_name, color, description, path_data:'[]', stops_order:'[]', total_distance:0, active:1 };
+    routes.push(nr);
+    rebuildRouteSelect();
+    // Auto-select the new route
+    activeRoute = nr;
+    document.getElementById('rSel').value = nr.id;
+    pts = [];
+    updateDist();
     renderPanel();
+    render();
     toast('Route created ✓');
   }
 }
 
 function selectRoute(id) {
-  currentRoute = routes.find(r => r.id === id);
-  document.getElementById('routeSelect').value = id;
-  drawPoints = JSON.parse(currentRoute?.path_data || '[]');
-  updateDistanceDisplay();
+  activeRoute = routes.find(r => r.id === id) || null;
+  document.getElementById('rSel').value = activeRoute ? id : '';
+  pts = activeRoute ? parsePts(activeRoute.path_data) : [];
+  selStop = null; selBus = null;
+  updateDist();
   renderPanel();
   render();
 }
 
-async function deleteRoute(e, id) {
+async function delRoute(e, id) {
   e.stopPropagation();
   if (!confirm('Delete this route?')) return;
-  await apiFetch(`/api/routes/${id}`, 'DELETE');
-  routes = routes.filter(r => r.id !== id);
-  if (currentRoute?.id === id) { currentRoute = null; drawPoints = []; }
-  buildRouteSelect();
-  renderPanel();
-  render();
-  toast('Route deleted');
+  const res = await api(`/api/routes/${id}`, 'DELETE');
+  if (res) {
+    routes = routes.filter(r => r.id !== id);
+    if (activeRoute?.id === id) { activeRoute = null; pts = []; updateDist(); }
+    rebuildRouteSelect();
+    renderPanel(); render();
+    toast('Route deleted');
+  }
 }
 
-function renderStopsPanel(body) {
-  if (selectedStop) {
-    const s = selectedStop;
-    const railConns = JSON.parse(s.rail_connections || '[]');
-    const routesList = JSON.parse(s.routes || '[]');
+// ── Stops tab ─────────────────────────────────────────────────────
+function renderStops(body) {
+  if (selStop) {
+    const s = selStop;
+    const conns = (() => { try { return JSON.parse(s.rail_connections||'[]'); } catch { return []; } })();
+    const tagsHtml = conns.length
+      ? conns.map((rc,i) => {
+          const rl = RAIL_LINES.find(l=>l.id===rc.line);
+          return `<div class="rtag">
+            <span style="width:8px;height:8px;border-radius:50%;background:${rl?.color||'#888'};display:inline-block"></span>
+            ${rc.line} – ${rc.station_name}
+            <span class="rm" onclick="rmRail(${i})">×</span>
+          </div>`;
+        }).join('')
+      : '<span style="font-size:11px;color:#aaa">None</span>';
 
-    let railTagsHtml = railConns.map((rc, i) =>
-      `<div class="rail-tag"><span style="width:8px;height:8px;border-radius:50%;background:${RAIL_LINES.find(l=>l.id===rc.line)?.color||'#888'};display:inline-block"></span> ${rc.line} Line – ${rc.station_name} <span class="rm" onclick="removeRailConn(${i})">×</span></div>`
-    ).join('');
-
-    let html = `
-      <button class="btn btn-secondary" onclick="selectedStop=null;renderPanel()" style="margin-bottom:12px">← Back</button>
-      <div class="form-row"><label>Stop Name</label><input id="sName" value="${s.name}"></div>
-      <div class="form-row">
+    body.innerHTML = `
+      <button class="btn btn-sec" onclick="selStop=null;renderPanel()" style="margin-bottom:12px">← Back to list</button>
+      <div class="fr"><label>Stop Name</label><input id="sN" value="${s.name}"></div>
+      <div class="fr">
         <label>Rail Connections</label>
-        <div id="railTagsWrap">${railTagsHtml || '<span style="color:#888;font-size:12px">None</span>'}</div>
-        <div class="rail-add-row">
-          <select id="railLineSelect">
-            <option value="">Line...</option>
-            ${RAIL_LINES.map(l => `<option value="${l.id}">${l.name}</option>`).join('')}
-          </select>
-          <input type="text" id="railStationName" placeholder="Station name" style="flex:1.5;font-size:12px;padding:5px;border:1px solid #ddd;border-radius:2px">
-          <button onclick="addRailConn()">Add</button>
+        <div class="rail-wrap" id="railWrap">${tagsHtml}</div>
+        <div class="radd">
+          <select id="rlSel"><option value="">Line…</option>${RAIL_LINES.map(l=>`<option value="${l.id}">${l.name}</option>`).join('')}</select>
+          <input type="text" id="rlStn" placeholder="Station name">
+          <button onclick="addRail()">Add</button>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="saveStop()">Save Stop</button>
-      <button class="btn btn-danger" onclick="deleteStop('${s.id}')">Delete Stop</button>`;
-    body.innerHTML = html;
+      <button class="btn btn-blk" onclick="saveStop()">Save Stop</button>
+      <button class="btn btn-red" onclick="delStop('${s.id}')">Delete Stop</button>`;
     return;
   }
 
-  let html = `
-    <section-title>Stops — Click map to place in Stop mode</section-title>`;
-  const routeStops = currentRoute
-    ? stops.filter(s => JSON.parse(s.routes || '[]').includes(currentRoute.id))
+  // List all stops (filtered to active route if one selected)
+  const list = activeRoute
+    ? stops.filter(s => { try { return JSON.parse(s.routes||'[]').includes(activeRoute.id); } catch { return false; } })
     : stops;
 
-  if (!routeStops.length) {
-    html += `<p style="font-size:12px;color:#888">No stops${currentRoute ? ' on this route' : ''} yet. Select the Stop tool and click the map.</p>`;
+  let h = `<div class="sec-title">Stops${activeRoute ? ' on '+activeRoute.short_name : ''} (${list.length})</div>`;
+  if (!list.length) {
+    h += `<p style="font-size:12px;color:#aaa">${activeRoute ? 'No stops on this route yet.' : 'No stops yet.'} Use the Stop tool and click the map.</p>`;
   } else {
-    routeStops.forEach(s => {
-      const railConns = JSON.parse(s.rail_connections || '[]');
-      html += `<div class="list-item ${selectedStop?.id===s.id?'selected':''}" onclick="selectStop('${s.id}')">
-        <div style="font-size:16px">●</div>
-        <div>
-          <div class="list-name">${s.name}</div>
-          <div class="list-meta">${railConns.length ? '🚇 Rail connection' : 'Bus only'}</div>
+    list.forEach(s => {
+      const hasRail = (() => { try { return JSON.parse(s.rail_connections||'[]').length > 0; } catch { return false; } })();
+      h += `<div class="li ${selStop?.id===s.id?'on':''}" onclick="pickStop('${s.id}')">
+        <div style="font-size:13px">●</div>
+        <div style="flex:1;min-width:0">
+          <div class="li-name">${s.name}</div>
+          <div class="li-meta">${hasRail ? '🚇 Rail connection' : 'Bus only'}</div>
         </div>
-        <span class="list-del" onclick="deleteStop(event,'${s.id}')">×</span>
+        <span class="li-del" onclick="delStop(event,'${s.id}')">×</span>
       </div>`;
     });
   }
-  body.innerHTML = html;
+  body.innerHTML = h;
 }
 
-function selectStop(id) {
-  selectedStop = stops.find(s => s.id === id);
+function pickStop(id) { selStop = stops.find(s=>s.id===id); renderPanel(); }
+
+function addRail() {
+  if (!selStop) return;
+  const line = document.getElementById('rlSel').value;
+  const stn = document.getElementById('rlStn').value.trim();
+  if (!line || !stn) { toast('Select line and enter station name'); return; }
+  const conns = (() => { try { return JSON.parse(selStop.rail_connections||'[]'); } catch { return []; } })();
+  conns.push({ line, station_name: stn });
+  selStop.rail_connections = JSON.stringify(conns);
   renderPanel();
 }
 
-function addRailConn() {
-  if (!selectedStop) return;
-  const line = document.getElementById('railLineSelect').value;
-  const station_name = document.getElementById('railStationName').value.trim();
-  if (!line || !station_name) { toast('Select line and enter station name'); return; }
-  const conns = JSON.parse(selectedStop.rail_connections || '[]');
-  conns.push({ line, station_name });
-  selectedStop.rail_connections = JSON.stringify(conns);
-  renderPanel();
-}
-
-function removeRailConn(idx) {
-  if (!selectedStop) return;
-  const conns = JSON.parse(selectedStop.rail_connections || '[]');
+function rmRail(idx) {
+  if (!selStop) return;
+  const conns = (() => { try { return JSON.parse(selStop.rail_connections||'[]'); } catch { return []; } })();
   conns.splice(idx, 1);
-  selectedStop.rail_connections = JSON.stringify(conns);
+  selStop.rail_connections = JSON.stringify(conns);
   renderPanel();
 }
 
 async function saveStop() {
-  if (!selectedStop) return;
-  const name = document.getElementById('sName').value.trim();
+  if (!selStop) return;
+  const name = document.getElementById('sN').value.trim();
   if (!name) { toast('Name required'); return; }
-  selectedStop.name = name;
-  await apiFetch(`/api/stops/${selectedStop.id}`, 'PUT', {
-    name,
-    rail_connections: JSON.parse(selectedStop.rail_connections || '[]'),
-  });
-  const idx = stops.findIndex(s => s.id === selectedStop.id);
-  if (idx >= 0) stops[idx] = { ...stops[idx], name, rail_connections: selectedStop.rail_connections };
-  render();
-  toast('Stop saved ✓');
+  const conns = (() => { try { return JSON.parse(selStop.rail_connections||'[]'); } catch { return []; } })();
+  const res = await api(`/api/stops/${selStop.id}`, 'PUT', { name, rail_connections: conns });
+  if (res) {
+    selStop.name = name;
+    const idx = stops.findIndex(s=>s.id===selStop.id);
+    if(idx>=0) stops[idx] = { ...stops[idx], name, rail_connections: selStop.rail_connections };
+    render();
+    toast('Stop saved ✓');
+  }
 }
 
-async function deleteStop(e, id) {
-  if (typeof e === 'object') { e.stopPropagation(); } else { id = e; }
+async function delStop(e, id) {
+  if (typeof e==='object') { e.stopPropagation(); } else { id = e; }
+  const sid = id || selStop?.id;
   if (!confirm('Delete this stop?')) return;
-  const stopId = id || selectedStop?.id;
-  await apiFetch(`/api/stops/${stopId}`, 'DELETE');
-  stops = stops.filter(s => s.id !== stopId);
-  selectedStop = null;
-  renderPanel();
-  render();
-  toast('Stop deleted');
+  const res = await api(`/api/stops/${sid}`, 'DELETE');
+  if (res) {
+    stops = stops.filter(s=>s.id!==sid);
+    selStop = null;
+    renderPanel(); render();
+    toast('Stop deleted');
+  }
 }
 
-function renderBusesPanel(body) {
-  if (selectedBus) {
-    const b = selectedBus;
-    let html = `
-      <button class="btn btn-secondary" onclick="selectedBus=null;renderPanel()" style="margin-bottom:12px">← Back</button>
-      <div class="speed-display">${b.current_speed || 0} <span>mph</span></div>
-      <div class="form-row"><label>Bus Number</label><input id="bNum" value="${b.bus_number}"></div>
-      <div class="form-row"><label>Driver Name</label><input id="bDriver" value="${b.driver_name||''}"></div>
-      <div class="form-row"><label>Speed (mph)</label><input type="number" id="bSpeed" value="${b.current_speed||0}" min="0" max="80"></div>
-      <div class="form-row"><label>Status</label>
-        <select id="bStatus">
+// ── Buses tab ─────────────────────────────────────────────────────
+function renderBuses(body) {
+  if (selBus) {
+    const b = selBus;
+    body.innerHTML = `
+      <button class="btn btn-sec" onclick="selBus=null;renderPanel()" style="margin-bottom:12px">← Back to list</button>
+      <div class="spd">${b.current_speed || 0} <small>mph</small></div>
+      <div class="fr"><label>Bus Number</label><input id="bN" value="${b.bus_number}"></div>
+      <div class="fr"><label>Driver Name</label><input id="bD" value="${b.driver_name||''}"></div>
+      <div class="fr"><label>Speed (mph)</label><input type="number" id="bS" value="${b.current_speed||0}" min="0" max="90"></div>
+      <div class="fr"><label>Status</label>
+        <select id="bSt">
           <option value="in_service" ${b.status==='in_service'?'selected':''}>In Service</option>
           <option value="out_of_service" ${b.status==='out_of_service'?'selected':''}>Out of Service</option>
           <option value="layover" ${b.status==='layover'?'selected':''}>Layover</option>
           <option value="breakdown" ${b.status==='breakdown'?'selected':''}>Breakdown</option>
         </select>
       </div>
-      <button class="btn btn-primary" onclick="saveBus()">Save Bus</button>
-      <button class="btn btn-danger" onclick="deleteBus('${b.id}')">Remove Bus</button>`;
-    body.innerHTML = html;
+      <button class="btn btn-blk" onclick="saveBus()">Save Bus</button>
+      <button class="btn btn-red" onclick="delBus('${b.id}')">Remove Bus</button>`;
     return;
   }
 
-  const routeBuses = currentRoute
-    ? buses.filter(b => b.route_id === currentRoute.id)
-    : buses;
+  const list = activeRoute ? buses.filter(b=>b.route_id===activeRoute.id) : buses;
+  const sColors = { in_service:'#22aa55', out_of_service:'#aaa', layover:'#F5A623', breakdown:'#d93025' };
 
-  let html = `<section-title>Active Buses</section-title>`;
-  if (!routeBuses.length) {
-    html += `<p style="font-size:12px;color:#888">No buses${currentRoute ? ' on this route' : ''}. Select Bus tool and click the map to place one.</p>`;
+  let h = `<div class="sec-title">Buses${activeRoute ? ' on '+activeRoute.short_name : ''} (${list.length})</div>`;
+  if (!list.length) {
+    h += `<p style="font-size:12px;color:#aaa">No buses${activeRoute?' on this route':''} yet. Use the Bus tool and click the map.</p>`;
   } else {
-    routeBuses.forEach(b => {
-      const statusColors = { in_service: '#38a169', out_of_service: '#888', layover: '#F5A623', breakdown: '#e53e3e' };
-      html += `<div class="list-item ${selectedBus?.id===b.id?'selected':''}" onclick="selectBus('${b.id}')">
-        <div style="width:10px;height:10px;border-radius:50%;background:${statusColors[b.status]||'#888'};flex-shrink:0"></div>
-        <div>
-          <div class="list-name">Bus ${b.bus_number}</div>
-          <div class="list-meta">${b.route_name || ''} · ${b.current_speed||0} mph</div>
+    list.forEach(b => {
+      h += `<div class="li ${selBus?.id===b.id?'on':''}" onclick="pickBus('${b.id}')">
+        <div class="sdot" style="background:${sColors[b.status]||'#aaa'}"></div>
+        <div style="flex:1;min-width:0">
+          <div class="li-name">Bus ${b.bus_number}</div>
+          <div class="li-meta">${b.short_name||''} · ${b.current_speed||0} mph · ${b.status?.replace('_',' ')}</div>
         </div>
-        <span class="list-del" onclick="deleteBus(event,'${b.id}')">×</span>
+        <span class="li-del" onclick="delBus(event,'${b.id}')">×</span>
       </div>`;
     });
   }
-  body.innerHTML = html;
+  body.innerHTML = h;
 }
 
-function selectBus(id) {
-  selectedBus = buses.find(b => b.id === id);
-  renderPanel();
-}
+function pickBus(id) { selBus = buses.find(b=>b.id===id); renderPanel(); }
 
 async function saveBus() {
-  if (!selectedBus) return;
-  const bus_number = document.getElementById('bNum').value.trim();
-  const driver_name = document.getElementById('bDriver').value.trim();
-  const current_speed = parseFloat(document.getElementById('bSpeed').value) || 0;
-  const status = document.getElementById('bStatus').value;
-
-  await apiFetch(`/api/buses/${selectedBus.id}`, 'PUT', { bus_number, driver_name, current_speed, status });
-  Object.assign(selectedBus, { bus_number, driver_name, current_speed, status });
-  const idx = buses.findIndex(b => b.id === selectedBus.id);
-  if (idx >= 0) buses[idx] = { ...buses[idx], bus_number, driver_name, current_speed, status };
-  render();
-  toast('Bus updated ✓');
+  if (!selBus) return;
+  const bus_number = document.getElementById('bN').value.trim();
+  const driver_name = document.getElementById('bD').value.trim();
+  const current_speed = parseFloat(document.getElementById('bS').value)||0;
+  const status = document.getElementById('bSt').value;
+  const res = await api(`/api/buses/${selBus.id}`, 'PUT', { bus_number, driver_name, current_speed, status });
+  if (res) {
+    Object.assign(selBus, { bus_number, driver_name, current_speed, status });
+    const idx = buses.findIndex(b=>b.id===selBus.id);
+    if(idx>=0) buses[idx] = {...buses[idx], bus_number, driver_name, current_speed, status};
+    render(); toast('Bus updated ✓');
+  }
 }
 
-async function deleteBus(e, id) {
-  if (typeof e === 'object') { e.stopPropagation(); } else { id = e; }
-  const busId = id || selectedBus?.id;
+async function delBus(e, id) {
+  if (typeof e==='object') { e.stopPropagation(); } else { id = e; }
+  const bid = id || selBus?.id;
   if (!confirm('Remove this bus?')) return;
-  await apiFetch(`/api/buses/${busId}`, 'DELETE');
-  buses = buses.filter(b => b.id !== busId);
-  selectedBus = null;
-  renderPanel();
-  render();
-  toast('Bus removed');
+  const res = await api(`/api/buses/${bid}`, 'DELETE');
+  if (res) {
+    buses = buses.filter(b=>b.id!==bid);
+    selBus = null;
+    renderPanel(); render();
+    toast('Bus removed');
+  }
 }
 
-// ── Toast ─────────────────────────────────────────────────────
+// ── Toast ─────────────────────────────────────────────────────────
 function toast(msg) {
   const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.style.display = 'block';
+  el.textContent = msg; el.style.display = 'block';
   clearTimeout(el._t);
-  el._t = setTimeout(() => el.style.display = 'none', 2500);
+  el._t = setTimeout(() => el.style.display='none', 2800);
 }
 
-// ── Init ──────────────────────────────────────────────────────
-resizeCanvas();
-loadAll();
+// ── Init ──────────────────────────────────────────────────────────
+resizeCv();
+if (key) loadAll();
+else renderPanel();
 
-// Auto-refresh bus positions every 15s
+// Wire up tab clicks
+document.querySelectorAll('.ptab').forEach(t => {
+  t.addEventListener('click', () => showTab(t.dataset.tab));
+});
+
+// Auto-refresh bus positions every 20s
 setInterval(async () => {
-  const fresh = await apiFetch('/api/buses');
-  if (fresh) { buses = fresh; render(); }
-}, 15000);
+  if (!key) return;
+  const b = await api('/api/buses');
+  if (Array.isArray(b)) { buses = b; render(); }
+}, 20000);
 </script>
 </body>
 </html>
