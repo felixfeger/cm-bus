@@ -3,21 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>City Metro Bus — Get Moving</title>
+<title>City Metro Transit — Bus</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- ── Nav ── -->
 <nav id="nav">
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">
-      <img src="logo.png" alt="City Metro" onerror="this.style.display='none'">
-      <span class="nav-wordmark">City Metro <strong>Bus</strong></span>
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="4" fill="#111"/>
+        <rect x="5" y="10" width="22" height="14" rx="2" fill="#FFD600"/>
+        <rect x="7" y="12" width="7" height="5" rx="1" fill="#111"/>
+        <rect x="18" y="12" width="7" height="5" rx="1" fill="#111"/>
+        <circle cx="10" cy="25" r="2.5" fill="#111" stroke="#FFD600" stroke-width="1.5"/>
+        <circle cx="22" cy="25" r="2.5" fill="#111" stroke="#FFD600" stroke-width="1.5"/>
+      </svg>
+      <span class="nav-wordmark">City Metro Transit <span>Bus</span></span>
     </a>
-    <button class="nav-burger" id="navBurger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="nav-burger" id="navBurger"><span></span><span></span><span></span></button>
     <ul class="nav-links" id="navLinks">
       <li><a href="index.html" class="active">Home</a></li>
       <li><a href="arrivals.html">Live Arrivals</a></li>
@@ -26,174 +30,170 @@
   </div>
 </nav>
 
-<!-- ── Hero ── -->
 <section class="hero">
-  <div class="hero-content">
+  <div class="hero-inner">
     <div class="hero-eyebrow">Republic States Transit Authority</div>
-    <h1 class="hero-h1">LC County<br>Bus Network</h1>
-    <p class="hero-sub">Real-time tracking · Citywide coverage · Connects to rail</p>
+    <h1 class="hero-h1">LC County<br><em>Bus Network</em></h1>
+    <p class="hero-sub">Real-time tracking across every route. Connects seamlessly to Metro rail.</p>
     <div class="hero-actions">
       <a href="trip-planner.html" class="btn-primary">Plan a Trip</a>
-      <a href="arrivals.html" class="btn-outline">Live Arrivals</a>
+      <a href="arrivals.html" class="btn-ghost">Live Arrivals</a>
     </div>
-  </div>
-  <div class="hero-stats">
-    <div class="stat"><span id="statRoutes">—</span><label>Routes</label></div>
-    <div class="stat"><span id="statStops">—</span><label>Stops</label></div>
-    <div class="stat"><span id="statBuses">—</span><label>Buses Active</label></div>
+    <div class="hero-stats">
+      <div class="stat"><span id="statRoutes">—</span><label>Routes</label></div>
+      <div class="stat"><span id="statStops">—</span><label>Stops</label></div>
+      <div class="stat"><span id="statBuses">—</span><label>Buses Active</label></div>
+    </div>
   </div>
 </section>
 
-<!-- ── Live Map ── -->
 <section class="section map-section">
-  <div class="section-header">
-    <h2>Live Bus Map</h2>
-    <div class="live-dot"><span></span>Live</div>
+  <div class="section-inner">
+    <div class="section-hd">
+      <h2>Live Bus Locations</h2>
+      <div class="live-badge"><span></span>Live</div>
+    </div>
+    <div class="map-wrap">
+      <canvas id="liveMap"></canvas>
+      <div class="map-msg" id="mapMsg">Connecting to live feed…</div>
+    </div>
+    <div class="route-legend" id="routeLegend"></div>
   </div>
-  <div class="map-embed-wrap">
-    <canvas id="liveMap"></canvas>
-    <div class="map-overlay-msg" id="mapMsg">Loading...</div>
-  </div>
-  <div class="route-legend" id="routeLegend"></div>
 </section>
 
-<!-- ── Features ── -->
 <section class="section features-section">
-  <div class="features-grid">
-    <div class="feature">
-      <div class="feature-icon">🚌</div>
-      <h3>Real-Time Tracking</h3>
-      <p>See every bus on the network updated live. Know exactly when your ride arrives.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">🚇</div>
-      <h3>Rail Connections</h3>
-      <p>Seamless transfers to the A, B, D, E, F, and K Metro rail lines at key stops.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">🗺</div>
-      <h3>Trip Planner</h3>
-      <p>Enter where you're going and we'll find the fastest route with live ETAs.</p>
-    </div>
-    <div class="feature">
-      <div class="feature-icon">📡</div>
-      <h3>Service Alerts</h3>
-      <p>Get real-time updates on delays, detours, and scheduled maintenance.</p>
+  <div class="section-inner">
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-icon">🚌</div>
+        <h3>Real-Time Tracking</h3>
+        <p>Every bus tracked live. See exactly where your ride is and when it arrives.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🚇</div>
+        <h3>Rail Connections</h3>
+        <p>Seamless transfers to A, B, D, E, F, and K Metro rail lines at key interchange stops.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🗺️</div>
+        <h3>Trip Planner</h3>
+        <p>Enter where you're going and get live ETAs with the fastest route options.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📢</div>
+        <h3>Service Alerts</h3>
+        <p>Instant updates on delays, detours, and scheduled service changes.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ── Alerts ── -->
 <section class="section alerts-section" id="alertsSection" style="display:none">
-  <div class="section-header"><h2>Service Alerts</h2></div>
-  <div id="alertsList"></div>
+  <div class="section-inner">
+    <div class="section-hd"><h2>Service Alerts</h2></div>
+    <div id="alertsList"></div>
+  </div>
 </section>
 
-<!-- ── Footer ── -->
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
-      <img src="logo.png" alt="City Metro" onerror="this.style.display='none'">
-      <span>City Metro Bus</span>
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="4" fill="#333"/>
+        <rect x="5" y="10" width="22" height="14" rx="2" fill="#FFD600"/>
+        <rect x="7" y="12" width="7" height="5" rx="1" fill="#333"/>
+        <rect x="18" y="12" width="7" height="5" rx="1" fill="#333"/>
+        <circle cx="10" cy="25" r="2.5" fill="#333" stroke="#FFD600" stroke-width="1.5"/>
+        <circle cx="22" cy="25" r="2.5" fill="#333" stroke="#FFD600" stroke-width="1.5"/>
+      </svg>
+      <span>City Metro Transit Bus</span>
     </div>
     <div class="footer-links">
       <a href="index.html">Home</a>
-      <a href="arrivals.html">Arrivals</a>
+      <a href="arrivals.html">Live Arrivals</a>
       <a href="trip-planner.html">Trip Planner</a>
       <a href="admin.html">Admin</a>
     </div>
-    <p class="footer-copy">© 2026 City Metro Transit. All rights reserved.</p>
+    <p class="footer-copy">© 2026 Republic States Transit Authority — City Metro Transit. All rights reserved.</p>
   </div>
 </footer>
 
 <script>
-const API = 'https://city-metro-bus-api.felixfeger46.workers.dev/'; // ← update
+const API = 'https://city-metro-bus-api.felixfeger46.workers.dev';
 
-// ── Nav burger ──
 document.getElementById('navBurger').addEventListener('click', () => {
   document.getElementById('navLinks').classList.toggle('open');
-  document.getElementById('navBurger').classList.toggle('open');
 });
 
-// ── Stats ──
 async function loadStats() {
   try {
-    const res = await fetch(API + '/api/stats');
-    const data = await res.json();
-    document.getElementById('statRoutes').textContent = data.active_routes || 0;
-    document.getElementById('statStops').textContent = data.active_stops || 0;
-    document.getElementById('statBuses').textContent = data.buses_in_service || 0;
+    const d = await fetch(API + '/api/stats').then(r => r.json());
+    document.getElementById('statRoutes').textContent = d.active_routes ?? 0;
+    document.getElementById('statStops').textContent = d.active_stops ?? 0;
+    document.getElementById('statBuses').textContent = d.buses_in_service ?? 0;
   } catch {}
 }
 
-// ── Alerts ──
 async function loadAlerts() {
   try {
-    const res = await fetch(API + '/api/alerts');
-    const alerts = await res.json();
+    const alerts = await fetch(API + '/api/alerts').then(r => r.json());
     if (!alerts.length) return;
     document.getElementById('alertsSection').style.display = 'block';
-    const colors = { info: '#0057A8', warning: '#F5A623', critical: '#e53e3e' };
-    document.getElementById('alertsList').innerHTML = alerts.map(a => `
-      <div class="alert-item" style="border-left:4px solid ${colors[a.severity]||'#888'}">
+    const colors = { info: 'info', warning: '', critical: 'critical' };
+    document.getElementById('alertsList').innerHTML = alerts.map(a =>
+      `<div class="alert-card ${colors[a.severity]||''}">
         <div class="alert-title">${a.title}</div>
         <div class="alert-body">${a.body}</div>
-      </div>
-    `).join('');
+      </div>`
+    ).join('');
   } catch {}
 }
 
-// ── Live mini map ──
+// ── Live map ──
 const canvas = document.getElementById('liveMap');
 const ctx = canvas.getContext('2d');
 let mapRoutes = [], mapStops = [], mapBuses = [];
 
 function resizeMap() {
   canvas.width = canvas.parentElement.clientWidth;
-  canvas.height = Math.min(420, window.innerHeight * 0.45);
-  renderMap();
+  canvas.height = Math.min(400, Math.round(window.innerHeight * 0.42));
+  draw();
 }
 
-async function loadMapData() {
+async function loadMap() {
   try {
     const [r, s, b] = await Promise.all([
       fetch(API + '/api/routes').then(x => x.json()),
       fetch(API + '/api/stops').then(x => x.json()),
       fetch(API + '/api/buses').then(x => x.json()),
     ]);
-    mapRoutes = r || [];
-    mapStops = s || [];
-    mapBuses = b || [];
+    mapRoutes = Array.isArray(r) ? r : [];
+    mapStops = Array.isArray(s) ? s : [];
+    mapBuses = Array.isArray(b) ? b : [];
     document.getElementById('mapMsg').style.display = 'none';
-    buildLegend();
-    renderMap();
-  } catch {
+    document.getElementById('routeLegend').innerHTML = mapRoutes.map(r =>
+      `<div class="legend-item"><div class="legend-dot" style="background:${r.color}"></div><span>${r.short_name} – ${r.name}</span></div>`
+    ).join('');
+  } catch (e) {
     document.getElementById('mapMsg').textContent = 'Map unavailable';
   }
 }
 
-function buildLegend() {
-  document.getElementById('routeLegend').innerHTML = mapRoutes.map(r => `
-    <div class="legend-item">
-      <div class="legend-dot" style="background:${r.color}"></div>
-      <span>${r.short_name} – ${r.name}</span>
-    </div>
-  `).join('');
-}
-
-function renderMap() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+function draw() {
   const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#f8f8f8';
+  ctx.fillRect(0, 0, W, H);
 
-  // Light grid
-  ctx.strokeStyle = '#e0e0e0';
+  // Grid
+  ctx.strokeStyle = '#e8e8e8';
   ctx.lineWidth = 1;
-  for (let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
-  for (let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  for (let x = 0; x < W; x += 50) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 50) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
 
   // Routes
   mapRoutes.forEach(route => {
-    const pts = JSON.parse(route.path_data || '[]');
+    const pts = (() => { try { return JSON.parse(route.path_data || '[]'); } catch { return []; } })();
     if (pts.length < 2) return;
     ctx.strokeStyle = route.color || '#FFD600';
     ctx.lineWidth = 3;
@@ -206,34 +206,31 @@ function renderMap() {
   });
 
   // Stops
-  mapStops.forEach(stop => {
+  mapStops.forEach(s => {
     ctx.fillStyle = '#fff';
-    ctx.strokeStyle = '#333';
+    ctx.strokeStyle = '#555';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.arc(stop.x, stop.y, 5, 0, Math.PI * 2);
+    ctx.arc(s.x, s.y, 5, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
   });
 
-  // Buses — animated pulse
-  const t = Date.now() / 600;
+  // Buses (animated)
+  const t = Date.now() / 700;
   mapBuses.forEach(bus => {
     if (bus.status !== 'in_service') return;
     const x = bus.current_x, y = bus.current_y;
     const color = bus.color || '#FFD600';
-    const pulse = 0.4 + 0.3 * Math.abs(Math.sin(t));
-
-    // Pulse ring
+    // Pulse
+    ctx.globalAlpha = 0.3 + 0.25 * Math.abs(Math.sin(t));
     ctx.strokeStyle = color;
-    ctx.lineWidth = 1.5;
-    ctx.globalAlpha = pulse;
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(x, y, 14 + 4 * Math.abs(Math.sin(t)), 0, Math.PI * 2);
+    ctx.arc(x, y, 14 + 3 * Math.abs(Math.sin(t)), 0, Math.PI * 2);
     ctx.stroke();
     ctx.globalAlpha = 1;
-
-    // Bus body
+    // Body
     ctx.fillStyle = color;
     ctx.strokeStyle = '#333';
     ctx.lineWidth = 1.5;
@@ -241,12 +238,11 @@ function renderMap() {
     ctx.arc(x, y, 9, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
-
-    // Route label
+    // Label
     ctx.fillStyle = '#000';
-    ctx.font = 'bold 7px Helvetica';
+    ctx.font = 'bold 8px Helvetica';
     ctx.textAlign = 'center';
-    ctx.fillText(bus.short_name || bus.bus_number || '', x, y + 2.5);
+    ctx.fillText(bus.short_name || bus.bus_number || '', x, y + 3);
     ctx.textAlign = 'left';
   });
 }
@@ -255,21 +251,13 @@ window.addEventListener('resize', resizeMap);
 resizeMap();
 loadStats();
 loadAlerts();
-loadMapData();
+loadMap();
 
-// Refresh buses every 15s
 setInterval(async () => {
-  try {
-    const res = await fetch(API + '/api/buses');
-    mapBuses = await res.json();
-  } catch {}
+  try { mapBuses = await fetch(API + '/api/buses').then(r => r.json()); } catch {}
 }, 15000);
 
-// Animate map
-(function loop() {
-  renderMap();
-  requestAnimationFrame(loop);
-})();
+(function loop() { draw(); requestAnimationFrame(loop); })();
 </script>
 </body>
 </html>
