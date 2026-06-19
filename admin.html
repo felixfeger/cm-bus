@@ -413,11 +413,14 @@ async function onUp() {
   }
 }
 
+// ── Scale: 1 grid square = 1 mile = 50px ───────────────────
+const SCALE = 50; // pixels per mile
+
 // ── Path ────────────────────────────────────────────────────
 function calcDist(pts) {
   let total = 0;
   for (let i = 1; i < pts.length; i++) total += d2(pts[i-1], pts[i]);
-  return total;
+  return total / SCALE; // convert px to miles
 }
 function updateDist() {
   document.getElementById('distBadge').textContent = calcDist(drawPts).toFixed(2) + ' mi total';
@@ -497,7 +500,7 @@ function render() {
   for (let y = 0; y < H; y += 50) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
   ctx.fillStyle = '#bbb';
   ctx.font = '10px Helvetica';
-  ctx.fillText('1 px = 1 mi', 8, H - 8);
+  ctx.fillText('1 square = 1 mile', 8, H - 8);
 
   // All saved routes
   routes.forEach(route => {
@@ -529,7 +532,7 @@ function render() {
     // Segment distance labels
     ctx.textAlign = 'center';
     for (let i = 1; i < drawPts.length; i++) {
-      const seg = d2(drawPts[i-1], drawPts[i]).toFixed(2);
+      const seg = (d2(drawPts[i-1], drawPts[i]) / SCALE).toFixed(2);
       const mx = (drawPts[i-1].x + drawPts[i].x) / 2;
       const my = (drawPts[i-1].y + drawPts[i].y) / 2;
       ctx.fillStyle = 'rgba(255,255,255,0.88)';
