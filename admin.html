@@ -159,6 +159,7 @@ header h1 { font-size: 13px; font-weight: 800; letter-spacing: 0.07em; text-tran
     <h2>Admin Sign In</h2>
     <input type="password" id="keyIn" placeholder="Admin key" onkeydown="if(event.key==='Enter')doAuth()">
     <button onclick="doAuth()">Sign In</button>
+    <button id="clearKeyBtn" style="margin-top:8px;background:#f4f4f4;color:#555;border:1px solid #ddd;width:100%;padding:7px;font-family:inherit;font-size:12px;cursor:pointer;border-radius:2px;">Clear Saved Key</button>
   </div>
 </div>
 
@@ -234,6 +235,13 @@ function setAuthUI(on) {
 }
 
 if (adminKey) setAuthUI(true);
+
+document.getElementById('clearKeyBtn').addEventListener('click', () => {
+  localStorage.removeItem('cmt_key');
+  adminKey = '';
+  document.getElementById('keyIn').value = '';
+  toast('Saved key cleared — enter key again');
+});
 
 // ── API ─────────────────────────────────────────────────────
 async function api(path, method='GET', body=null) {
@@ -632,8 +640,8 @@ function renderRoutes(body) {
     <div class="fr"><label>Short Name</label><input id="rShort" placeholder="1" maxlength="4"></div>
     <div class="fr"><label>Color</label>
       <div class="crow">
-        <input type="color" id="rCP" value="#FFD600" oninput="document.getElementById('rCT').value=this.value">
-        <input type="text" id="rCT" value="#FFD600" oninput="document.getElementById('rCP').value=this.value">
+        <input type="color" id="rCP" value="#FFD600">
+        <input type="text" id="rCT" value="#FFD600">
       </div>
     </div>
     <div class="fr"><label>Description (optional)</label><textarea id="rDesc"></textarea></div>
@@ -641,6 +649,14 @@ function renderRoutes(body) {
     <hr class="divider">
     <span class="stitle">All Routes (${routes.length})</span>
     ${routes.length ? list : '<p class="empty-msg">No routes yet. Create one above.</p>'}`;
+
+  // Wire color pickers AFTER innerHTML is set — inline oninput breaks inside template literals
+  const rCP = document.getElementById('rCP');
+  const rCT = document.getElementById('rCT');
+  if (rCP && rCT) {
+    rCP.addEventListener('input', () => { rCT.value = rCP.value; });
+    rCT.addEventListener('input', () => { if (/^#[0-9a-fA-F]{6}$/.test(rCT.value)) rCP.value = rCT.value; });
+  }
 }
 
 async function createRoute() {
